@@ -3,6 +3,7 @@ import { useSocket } from "@/hooks/useSocket";
 import LandingBtn from "@/components/LandingBtn";
 import { useEffect, useState } from "react";
 import { Chess } from "chess.js";
+import { useGameStore } from "@/stores/game.store";
 
 //remove code repetion using commons or monoRepo
 export const INIT_GAME = "init_game";
@@ -13,7 +14,7 @@ const Game = () => {
   const socket = useSocket();
   const [chess, setChess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
-  const [started, setStarted] = useState(false)
+  const {started, setStarted} = useGameStore();
 
   useEffect(() => {
     if (!socket) {
@@ -26,7 +27,7 @@ const Game = () => {
         case INIT_GAME:
           setBoard(chess.board());
           console.log("Game initialized");
-          setStarted(true)
+          setStarted()
           break;
         case MOVE:
           const move = message.payload;
