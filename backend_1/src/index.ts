@@ -1,13 +1,18 @@
 import {WebSocketServer} from 'ws';
 import { GameManager } from './GameManager';
+import dotenv from "dotenv"
+dotenv.config()
+
+const port = Number(process.env.PORT)
 
 
+const wss = new WebSocketServer({port: port});
+console.log(`Server created at port ${process.env.PORT}`);
 
-const wss = new WebSocketServer({port: 8080});
 const gameManager = new GameManager();
 let userCount = 0;
 
-wss.on("connection", function connection(ws){
+wss.on("connection", function connection(ws, req){
   gameManager.addUser(ws);
   console.log(++userCount);
   

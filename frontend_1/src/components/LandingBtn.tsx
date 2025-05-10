@@ -1,26 +1,38 @@
-import styled from 'styled-components';
+import React from 'react';
+import styled, { css } from 'styled-components';
 import { Gamepad } from 'lucide-react';
 
+type Variant = 'default' | 'green' | 'red' | 'yellow';
 
-const LandingBtn = ({text}: {text: string}) => {
-  return (
-    <StyledWrapper>
-      <div>
-        <div className="button">
-          <Gamepad />
-            {text}
-        </div>
-      </div>
-    </StyledWrapper>
-  );
+interface LandingBtnProps {
+  text: string;
+  variant?: Variant;
 }
 
-const StyledWrapper = styled.div`
+const variantColors: Record<Variant, string> = {
+  default: '240, 40%',  // your original hue & saturation
+  green: '120, 40%',
+  red:   '0,  60%',
+  yellow:'60,  70%',
+};
+
+const LandingBtn: React.FC<LandingBtnProps> = ({ text, variant = 'default' }) => (
+  <StyledWrapper variant={variant}>
+    <div className="button">
+      <Gamepad />
+      {text}
+    </div>
+  </StyledWrapper>
+);
+
+const StyledWrapper = styled.div<{ variant: Variant }>`
+  /* pull in the correct hue/saturation for this variant */
+  --back-color: ${({ variant }) => variantColors[variant]};
+
   .button {
     --bezier: cubic-bezier(0.22, 0.61, 0.36, 1);
     --edge-light: hsla(0, 0%, 50%, 0.8);
     --text-light: rgba(255, 255, 255, 0.4);
-    --back-color: 240, 40%;
 
     cursor: pointer;
     padding: 0.7em 1em;
@@ -70,7 +82,7 @@ const StyledWrapper = styled.div`
     color: hsla(0, 0%, 100%, 1);
     letter-spacing: 0.1em;
     transform: scale(1);
-  }`;
+  }
+`;
 
 export default LandingBtn;
-

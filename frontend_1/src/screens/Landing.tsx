@@ -11,6 +11,10 @@ const Landing = () => {
     navigator("/game");
   };
 
+  const handleLogin = () =>{
+    navigator("/login");
+  };
+
   return (
     <div id="root" className="grid grid-cols-2 gap-4 ">
       <div className="h-screen flex items-center">
@@ -23,11 +27,14 @@ const Landing = () => {
           Number #2 best chess site.
         </TextAnimate>
         </h1>
-        <button
-          onClick={handleOnPlay}
-        >
-          <LandingBtn text="Play Game" />
-        </button>
+        <div className="flex gap-5">
+          <button onClick={handleLogin}>
+            <LandingBtn text="Login"  /> 
+            </button>
+          <button onClick={handleOnPlay}>
+            <LandingBtn text="Play Game" variant="green" />
+          </button>
+        </div>
       </div>
     </div>
   );

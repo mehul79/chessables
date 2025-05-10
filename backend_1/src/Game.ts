@@ -17,6 +17,7 @@ export class Game {
       type: INIT_GAME,
       playload: {
         color: "white",
+        startTime: this.startTime
       }
     }));
     

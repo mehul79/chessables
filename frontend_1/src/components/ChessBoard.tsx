@@ -48,6 +48,8 @@ const ChessBoard = ({
 
           return (
             <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
               key={colIndex}
               onClick={() => {
                 if (!from) {
@@ -65,8 +67,6 @@ const ChessBoard = ({
                   setFrom(null);
                 }
               }}
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
               className={`w-16 h-16 flex items-center justify-center ${
                 (rowIndex + colIndex) % 2 === 0
                   ? "bg-[#779556]"
