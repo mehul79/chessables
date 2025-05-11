@@ -4,11 +4,11 @@ import jwt from 'jsonwebtoken';
 import db  from '../utils/db';
 import { v4 as uuidv4 } from 'uuid';
 import { COOKIE_MAX_AGE } from '../utils/contants';
+import dotenv from "dotenv"
 
-
-const CLIENT_URL =
-  process.env.AUTH_REDIRECT_URL ?? 'http://localhost:5173/game/random';
-const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
+dotenv.config()
+const CLIENT_URL =process.env.AUTH_REDIRECT_URL;
+const JWT_SECRET = process.env.JWT_SECRET || 'mehul';
 
 interface userJwtClaims {
   userId: string;
@@ -103,7 +103,7 @@ export const logout = (req: Request, res: Response) => {
       res.status(500).json({ error: 'Failed to log out' });
     } else {
       res.clearCookie('jwt');
-      res.redirect('http://localhost:5173/');
+      res.redirect('http://localhost:3000/auth');
     }
   });
 }
