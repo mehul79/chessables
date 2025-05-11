@@ -12,14 +12,10 @@ interface GithubEmailRes {
 }
 
 dotenv.config();
-const GOOGLE_CLIENT_ID =
-  process.env.GOOGLE_CLIENT_ID || 'your_google_client_id';
-const GOOGLE_CLIENT_SECRET =
-  process.env.GOOGLE_CLIENT_SECRET || 'your_google_client_secret';
-const GITHUB_CLIENT_ID =
-  process.env.GITHUB_CLIENT_ID || 'your_github_client_id';
-const GITHUB_CLIENT_SECRET =
-  process.env.GITHUB_CLIENT_SECRET || 'your_github_client_secret';
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || 'your_google_client_id';
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || 'your_google_client_secret';
+const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID || 'your_github_client_id';
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET || 'your_github_client_secret';
 
 export function initPassport() {
   if (
