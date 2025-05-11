@@ -1,17 +1,20 @@
-import axios from "axios";
 import { TextAnimate } from "@/components/magicui/text-animate";
 import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/stores/game.store";
 
-const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL ?? "http://localhost:8080";
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL ?? "http://localhost:3000";
 
 
 const Login = () => {
+  const {user, fetchUser } = useUserStore();
+
   const google = () => {
     window.open(`${BACKEND_URL}/auth/google`, "_self");
   };
 
   const github = () => {
     window.open(`${BACKEND_URL}/auth/github`, "_self");
+    fetchUser();
   };
 
   return (
