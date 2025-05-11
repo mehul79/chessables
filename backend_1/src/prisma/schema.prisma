@@ -14,7 +14,7 @@ model User {
   email        String       @unique
   provider     AuthProvider
   password     String?
-  rating       Int          @default(800)
+  rating       Int          @default(850)
   createdAt    DateTime     @default(now())
   lastLogin    DateTime?
   gamesAsBlack Game[]       @relation("GamesAsBlack")
