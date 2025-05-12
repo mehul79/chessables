@@ -2,12 +2,11 @@ import LandingBtn, { Variant } from "@/components/LandingBtn";
 import { TextAnimate } from "@/components/magicui/text-animate";
 import { useUserStore } from "@/stores/game.store";
 import React from "react";
-import { redirect, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 const Landing = () => {
-  const { user,  logout } = useUserStore();
-
-  const navigator = useNavigate();
+  const { user, logout } = useUserStore();
+  const navigator = useNavigate()
 
   const handleOnPlay = () => {
     navigator("/game");
@@ -19,7 +18,6 @@ const Landing = () => {
 
   const handleLogout = () =>{
     logout()
-    redirect("/login")
   }
 
   return (

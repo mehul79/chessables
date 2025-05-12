@@ -21,7 +21,7 @@ type UserStore = {
     logout: () => void,
 }
 
-export const useUserStore = create<UserStore>((set) => ({
+const useUserStore = create<UserStore>((set) => ({
     user: null,
     isCheckingUser: false,
     fetchUser: async () => {
@@ -48,6 +48,7 @@ export const useUserStore = create<UserStore>((set) => ({
             const response = await axios.get(`${BACKEND_URL}/auth/logout`, {
                 withCredentials: true
             });
+            console.log("call done");
             console.log(response);
             set({user: null})
             set({isCheckingUser: false})
@@ -55,14 +56,15 @@ export const useUserStore = create<UserStore>((set) => ({
             console.error("Error while loggin out: ", e)
         }
     }
-
-
 }));
 
 
-export const useGameStore = create<GameStore>((set)=> ({
+
+const useGameStore = create<GameStore>((set)=> ({
     started: false,
     setStarted: ()=>{
         set({started: true})
     }
 }))
+
+export { useUserStore, useGameStore }
