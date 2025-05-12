@@ -1,28 +1,26 @@
-import LandingBtn from "@/components/LandingBtn";
+import LandingBtn, { Variant } from "@/components/LandingBtn";
 import { TextAnimate } from "@/components/magicui/text-animate";
 import { useUserStore } from "@/stores/game.store";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import React from "react";
+import { redirect, useNavigate } from "react-router-dom";
 
 const Landing = () => {
-
-  const {user, fetchUser} = useUserStore()
-  useEffect(()=>{
-    fetchUser()
-  }, [])
+  const { user,  logout } = useUserStore();
 
   const navigator = useNavigate();
-  
+
   const handleOnPlay = () => {
     navigator("/game");
   };
 
-  const handleLogin = () =>{
+  const handleLogin = () => {
     navigator("/login");
   };
 
-
+  const handleLogout = () =>{
+    logout()
+    redirect("/login")
+  }
 
   return (
     <div id="root" className="grid grid-cols-2 gap-4 ">
@@ -31,21 +29,37 @@ const Landing = () => {
       </div>
       <div className="flex flex-col justify-center items-center gap-4">
         {/* <h1 className="text-5xl font-extrabold">Number #2 best chess site.</h1> */}
-        <div>user: {JSON.stringify(user)}</div>
+        <div>user: {user? user.name : "null"}</div>
         <h1 className="text-4xl font-extrabold">
-        <TextAnimate animation="slideLeft" by="character">
-          Number #2 best chess site.
-        </TextAnimate>
+          <TextAnimate animation="slideLeft" by="character">
+            Number #2 best chess site.
+          </TextAnimate>
         </h1>
         <div className="flex gap-5">
-          <button onClick={handleLogin}>
-            <LandingBtn text="Login"  /> 
-            </button>
-          <button onClick={handleOnPlay}>
-            <LandingBtn text="Play Game" variant="green" />
-          </button>
+            {user ? (
+            <Buttoner text="Logout" onclick={handleLogout} variant="red" />
+            ) : (
+            <Buttoner text="Login" onclick={handleLogin} />
+            )}
+          <Buttoner text="Play Game" onclick={handleOnPlay} variant="green" />
         </div>
       </div>
+    </div>
+  );
+};
+
+interface ButtonerProps {
+  text: string;
+  onclick: () => void;
+  variant?: Variant | undefined 
+}
+
+const Buttoner: React.FC<ButtonerProps> = ({ text, onclick, variant }) => {
+  return (
+    <div>
+      <button onClick={onclick}>
+        <LandingBtn text={text} variant={variant} />
+      </button>
     </div>
   );
 };

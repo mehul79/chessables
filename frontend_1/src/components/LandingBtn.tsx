@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Gamepad } from 'lucide-react';
 
-type Variant = 'default' | 'green' | 'red' | 'yellow';
+export type Variant = 'default' | 'green' | 'red' | 'yellow';
 
 interface LandingBtnProps {
   text: string;
