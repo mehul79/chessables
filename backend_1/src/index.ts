@@ -9,6 +9,7 @@ import { COOKIE_MAX_AGE } from './utils/contants';
 import passport from "passport"
 import { initPassport } from './utils/passport';
 import cors from "cors"
+import url from "url"
 
 dotenv.config()
 const app = express()
@@ -47,7 +48,10 @@ console.log(`WS server at port ${process.env.WS_PORT}`);
 const gameManager = new GameManager();
 let userCount = 0;
 
-wss.on("connection", function connection(ws, req){
+wss.on("connection",  function connection(ws, req){
+  const parsedUrl = url.parse(req.url || '', true);
+  const token = parsedUrl.query.token as string | undefined;
+  console.log("hehe, ", token);
   gameManager.addUser(ws);
   console.log(++userCount);
   

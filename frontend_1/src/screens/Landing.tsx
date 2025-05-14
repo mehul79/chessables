@@ -3,13 +3,17 @@ import { TextAnimate } from "@/components/magicui/text-animate";
 import { useUserStore } from "@/stores/game.store";
 import React from "react";
 import {  useNavigate } from "react-router-dom";
+import axios from "axios"
+
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL ?? "http://localhost:3000";
 
 const Landing = () => {
-  const { user, logout } = useUserStore();
+  const { user, fetchUser, logout } = useUserStore();
   const navigator = useNavigate()
 
-  const handleOnPlay = () => {
-    navigator("/game");
+  const handleOnPlay = async() => {
+    const tokenVal = user?.token
+    navigator(`/game?token=${tokenVal}`);
   };
 
   const handleLogin = () => {
@@ -26,7 +30,6 @@ const Landing = () => {
         <img src="/Landing.png" className="mask-t-from-50% pl-4" />
       </div>
       <div className="flex flex-col justify-center items-center gap-4">
-        {/* <h1 className="text-5xl font-extrabold">Number #2 best chess site.</h1> */}
         <div>user: {user? user.name : "null"}</div>
         <h1 className="text-4xl font-extrabold">
           <TextAnimate animation="slideLeft" by="character">
