@@ -61,7 +61,7 @@ const Game = () => {
           <div className="col-span-2 bg-gray-900 flex justify-center pt-10 ">
             <div>
               <button onClick={handleOnPlay}>
-                {started? "" : <LandingBtn text="Play" />}
+                {started? "" : <LandingBtn text="Play" />} 
               </button>
             </div>
           </div>

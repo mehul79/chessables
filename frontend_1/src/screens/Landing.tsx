@@ -5,10 +5,9 @@ import React from "react";
 import {  useNavigate } from "react-router-dom";
 import axios from "axios"
 
-const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL ?? "http://localhost:3000";
 
 const Landing = () => {
-  const { user, fetchUser, logout } = useUserStore();
+  const { user,  logout } = useUserStore();
   const navigator = useNavigate()
 
   const handleOnPlay = async() => {

@@ -10,6 +10,7 @@ import passport from "passport"
 import { initPassport } from './utils/passport';
 import cors from "cors"
 import url from "url"
+import { extractUser } from './utils/extractUser';
 
 dotenv.config()
 const app = express()
@@ -49,9 +50,10 @@ const gameManager = new GameManager();
 let userCount = 0;
 
 wss.on("connection",  function connection(ws, req){
-  const parsedUrl = url.parse(req.url || '', true);
-  const token = parsedUrl.query.token as string | undefined;
-  console.log("hehe, ", token);
+
+  //@ts-ignore
+  const token: string = url.parse(req.url, true).query.token;
+  const user = extractUser(token, ws)
   gameManager.addUser(ws);
   console.log(++userCount);
   

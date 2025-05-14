@@ -31,7 +31,7 @@ const useUserStore = create<UserStore>((set) => ({
             const response = await axios.get(`${BACKEND_URL}/auth/refresh`, {
                 withCredentials: true
             });
-            // console.log(response);
+            console.log(response);
             const user: userSchema = response.data;
             set({ user: user });
             set({isCheckingUser: false})
