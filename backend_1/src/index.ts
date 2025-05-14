@@ -31,7 +31,7 @@ app.use(
   cors({
     origin: allowedHosts,
     methods: 'GET,POST,PUT,DELETE',
-    credentials: true,
+    credentials: true,  
   }),
 );
 
