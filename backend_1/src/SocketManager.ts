@@ -4,7 +4,7 @@ import { WebSocket } from 'ws';
 import { userJwtClaims } from './auth';
 
 export class User {
-  public socket: WebSocket;
+  public socket: WebSocket
   public id: string;
   public userId: string;
   public name: string;
