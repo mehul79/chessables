@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import db from "../utils/db";
-import { COOKIE_MAX_AGE } from "../utils/contants";
 import dotenv from "dotenv";
 
 dotenv.config();
