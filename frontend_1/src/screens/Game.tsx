@@ -14,7 +14,7 @@ const Game = () => {
   const socket = useSocket();
   const [chess, setChess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
-  const {started, setStarted} = useGameStore();
+  const {started, setStarted} = useGameStore()
 
   useEffect(() => {
     if (!socket) {
