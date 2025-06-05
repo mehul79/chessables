@@ -26,7 +26,8 @@ function App(){
     <Routes>
       <Route path="/" element={ <Landing /> } />
       <Route path="/login" element={<Login />} /> 
-      <Route path="/game" element={user? <Game /> : <Login />} />
+      {/* <Route path="/game" element={user? <Game /> : <Login />} /> */}
+      <Route path="/game" element={<Game />} />
     </Routes>
     </div>
   )
