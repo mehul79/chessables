@@ -27,13 +27,8 @@ function App(){
     <Routes>
       <Route path="/" element={ <Landing /> } />
       <Route path="/login" element={<Login />} /> 
-<<<<<<< HEAD
       <Route path="/game" element={user? <Game /> : <Login />} />
       <Route path="/settings" element={<Settings />} />
-=======
-      {/* <Route path="/game" element={user? <Game /> : <Login />} /> */}
-      <Route path="/game" element={<Game />} />
->>>>>>> 6178d5348c8520e1ea30c1f4c31f3c4493c18c79
     </Routes>
     </div>
   )

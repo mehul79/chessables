@@ -13,7 +13,6 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-<<<<<<< HEAD
 
 model User {
   id           String    @id @default(uuid())
@@ -87,5 +86,3 @@ enum TimeControl {
   BLITZ
   BULLET
 }
-=======
->>>>>>> 6178d5348c8520e1ea30c1f4c31f3c4493c18c79

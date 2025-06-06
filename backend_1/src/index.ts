@@ -41,12 +41,6 @@ app.use(
 app.use('/auth', authRouter);
 app.listen(process.env.APP_PORT, ()=>{console.log(`Express server at port  ${process.env.APP_PORT}`)})
 
-
-
-app.listen(process.env.APP_PORT, ()=>{
-  console.log(`App at Port: ${process.env.APP_PORT}`);
-})
-
 const wss = new WebSocketServer({port: Number(process.env.WS_PORT)});
 console.log(`WS server at port ${process.env.WS_PORT}`);
 
