@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { INIT_GAME, MOVE } from "./utils/messages";
+import { INIT_GAME, MOVE } from "./messages";
 import { Game } from "./Game";
 
 export class GameManager {

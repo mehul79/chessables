@@ -11,8 +11,9 @@ const Landing = () => {
   const navigator = useNavigate()
 
   const handleOnPlay = async() => {
-    const tokenVal = user?.token
-    navigator(`/game?token=${tokenVal}`);
+    // const tokenVal = user?.token
+    // navigator(`/game?token=${tokenVal}`);
+    navigator("/game")
   };
 
   const handleLogin = () => {
