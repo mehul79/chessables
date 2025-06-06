@@ -2,15 +2,19 @@ import {WebSocketServer} from 'ws';
 import { GameManager } from './GameManager';
 import express from  "express"
 import cors from "cors"; // Import the CORS middleware
-import { toNodeHandler } from "better-auth/node";
+import cookieParser from 'cookie-parser';
 import { auth } from "./auth";
 import dotenv from "dotenv"
+import session from 'express-session';
+import passport from 'passport';
+import authRouter from './router/auth.router';
+import { COOKIE_MAX_AGE } from './utils/constants';
+import { initPassport } from './utils/passport';
 dotenv.config()
 
 
 const app = express();
 app.use(express.json())
-<<<<<<< HEAD
 app.use(cookieParser())
 app.use(session({
     secret: process.env.COOKIE_SECRET || 'mehul',
@@ -25,29 +29,23 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const allowedHosts = process.env.ALLOWED_HOSTS? process.env.ALLOWED_HOSTS.split(','): [];
-=======
-app.all("/api/auth/*", toNodeHandler(auth));
->>>>>>> 6178d5348c8520e1ea30c1f4c31f3c4493c18c79
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Replace with your frontend's origin
-    methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
-    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    origin: "http://localhost:5173", 
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, 
   })
 );
 
-<<<<<<< HEAD
 app.use('/auth', authRouter);
 app.listen(process.env.APP_PORT, ()=>{console.log(`Express server at port  ${process.env.APP_PORT}`)})
 
 
 
-=======
 app.listen(process.env.APP_PORT, ()=>{
   console.log(`App at Port: ${process.env.APP_PORT}`);
 })
->>>>>>> 6178d5348c8520e1ea30c1f4c31f3c4493c18c79
 
 const wss = new WebSocketServer({port: Number(process.env.WS_PORT)});
 console.log(`WS server at port ${process.env.WS_PORT}`);
