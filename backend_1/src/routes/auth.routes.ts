@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import passport from "passport";
+import passport, { use } from "passport";
 import jwt from "jsonwebtoken";
 import db from "../utils/db";
 import dotenv from "dotenv";
@@ -22,11 +22,8 @@ interface UserDetails {
 
 // Refresh token route
 export const refresh = async (req: Request, res: Response) => {
-  //@ts-ignore
   if (req.user) {
-    //@ts-ignore
     const user = req.user as UserDetails;
-
     const userDb = await db.user.findFirst({
       where: { id: user.id },
     });
@@ -53,14 +50,42 @@ export const logout = (req: Request, res: Response) => {
   req.logout((err) => {
     if (err) {
       console.error("Error logging out:", err);
-      res.status(500).json({ error: "Failed to log out" });
-    } else {
-      res.clearCookie("jwt");
-      res.json({
-        msg: "logout successfull"
-      })
+      return res.status(500).json({ error: "Failed to log out" });
     }
+
+    req.session.destroy((destroyErr) => {
+      if (destroyErr) {
+        console.error("Error destroying session:", destroyErr);
+        return res.status(500).json({ error: "Failed to destroy session" });
+      }
+
+      res.clearCookie("connect.sid"); // Important: clear the session cookie
+      res.json({ msg: "Logout successful" });
+    });
   });
+};
+
+export const settings = async (req: Request, res: Response) => {
+  console.log("hehe", req.user);
+  
+  if (req.user) {
+      const user = req.user as UserDetails;
+      const updatedUser = await db.user.update({
+        where: { id: user.id },
+        data: { username: req.body.username },
+      });
+
+      res.json({
+        success: true,
+        user: {
+          id: updatedUser.id,
+          name: updatedUser.name,
+        },
+      });
+    }
+   else {
+    res.status(401).json({ success: false, message: "Unauthorized" });
+  }
 };
 
 // Google OAuth
@@ -69,16 +94,6 @@ export const google = passport.authenticate("google", {
 });
 
 export const googleCB = passport.authenticate("google", {
-  successRedirect: CLIENT_URL,
-  failureRedirect: "/login/failed",
-});
-
-// GitHub OAuth
-export const github = passport.authenticate("github", {
-    scope: ["read:user", "user:email"],
-  });
-
-export const githubCB = passport.authenticate("github", {
   successRedirect: CLIENT_URL,
   failureRedirect: "/login/failed",
 });

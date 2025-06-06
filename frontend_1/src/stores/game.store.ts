@@ -19,6 +19,7 @@ type UserStore = {
     isCheckingUser: boolean,
     fetchUser: () => void,
     logout: () => void,
+    updateUsername: (username: string)=> void
 }
 
 const useUserStore = create<UserStore>((set) => ({
@@ -54,6 +55,20 @@ const useUserStore = create<UserStore>((set) => ({
             set({isCheckingUser: false})
         }catch(e){
             console.error("Error while loggin out: ", e)
+        }
+    },
+
+    updateUsername: async(username: string) =>{
+        try{
+            console.log(username);
+            const res = await axios.post(
+            `${BACKEND_URL}/auth/settings`,
+            { username: username },
+            { withCredentials: true }
+        );
+        console.log(res);
+        }catch(e){
+            console.log(e);
         }
     }
 }));

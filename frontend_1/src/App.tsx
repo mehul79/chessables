@@ -4,6 +4,7 @@ import Game from "./screens/Game";
 import Login from "./screens/Login";
 import { useUserStore } from "./stores/game.store";
 import { useEffect } from "react";
+import Settings from "./screens/Settings";
 
 function App(){
 
@@ -27,6 +28,7 @@ function App(){
       <Route path="/" element={ <Landing /> } />
       <Route path="/login" element={<Login />} /> 
       <Route path="/game" element={user? <Game /> : <Login />} />
+      <Route path="/settings" element={<Settings />} />
     </Routes>
     </div>
   )

@@ -7,16 +7,12 @@ CREATE TYPE "GameResult" AS ENUM ('WHITE_WINS', 'BLACK_WINS', 'DRAW');
 -- CreateEnum
 CREATE TYPE "TimeControl" AS ENUM ('CLASSICAL', 'RAPID', 'BLITZ', 'BULLET');
 
--- CreateEnum
-CREATE TYPE "AuthProvider" AS ENUM ('EMAIL', 'GOOGLE', 'GITHUB', 'GUEST');
-
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "username" TEXT,
     "name" TEXT,
     "email" TEXT NOT NULL,
-    "provider" "AuthProvider" NOT NULL,
     "password" TEXT,
     "rating" INTEGER NOT NULL DEFAULT 1200,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

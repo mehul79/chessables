@@ -20,12 +20,13 @@ app.use(session({
     secret: process.env.COOKIE_SECRET || 'mehul',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: COOKIE_MAX_AGE },
+    cookie: {httpOnly: true, secure: false, maxAge: COOKIE_MAX_AGE },
 }))
 
 initPassport();
 app.use(passport.initialize());
-app.use(passport.authenticate('session'));
+// app.use(passport.authenticate('session'));
+app.use(passport.session());
 
 const allowedHosts = process.env.ALLOWED_HOSTS? process.env.ALLOWED_HOSTS.split(','): [];
 

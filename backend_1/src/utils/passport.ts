@@ -3,19 +3,11 @@ import { Strategy as GithubStrategy } from 'passport-github2';
 import passport from 'passport';
 import dotenv from 'dotenv';
 import  db  from '../utils/db';
-
-interface GithubEmailRes {
-  email: string;
-  primary: boolean;
-  verified: boolean;
-  visibility: 'private' | 'public';
-}
-
 dotenv.config();
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+
+const GOOGLE_CLIENT_ID = process.env.AUTH_GOOGLE_ID;
+const GOOGLE_CLIENT_SECRET = process.env.AUTH_GOOGLE_SECRET;
+
 
 
 
@@ -23,12 +15,10 @@ export function initPassport() {
   console.log("reached initPassport");
   if (
     !GOOGLE_CLIENT_ID ||
-    !GOOGLE_CLIENT_SECRET ||
-    !GITHUB_CLIENT_ID ||
-    !GITHUB_CLIENT_SECRET
+    !GOOGLE_CLIENT_SECRET 
   ) {
     throw new Error(
-      'Missing environment variables for authentication providers',
+      'Missing environment variables for authentication providers',      
     );
   }
 
@@ -49,7 +39,6 @@ export function initPassport() {
           create: {
             email: profile.emails[0].value,
             name: profile.displayName,
-            provider: 'GOOGLE',
           },
           update: {
             name: profile.displayName,
@@ -64,59 +53,31 @@ export function initPassport() {
     ),
   );
 
-  passport.use(
-    new GithubStrategy(
-      {
-        clientID: GITHUB_CLIENT_ID,
-        clientSecret: GITHUB_CLIENT_SECRET,
-        callbackURL: '/auth/github/callback',
-      },
-      async function (
-        accessToken: string,
-        refreshToken: string,
-        profile: any,
-        done: (error: any, user?: any) => void,
-      ) {
-        const res = await fetch('https://api.github.com/user/emails', {
-          headers: {
-            Authorization: `token ${accessToken}`,
-          },
-        });
-        const data: GithubEmailRes[] = await res.json();
-        const primaryEmail = data.find((item) => item.primary === true);
+passport.serializeUser(function (user: any, cb) {
+  process.nextTick(function () {
+    return cb(null, user.id); // Only store the ID
+  });
+});
 
-        const user = await db.user.upsert({
-          create: {
-            email: primaryEmail!.email,
-            name: profile.displayName,
-            provider: 'GITHUB',
-          },
-          update: {
-            name: profile.displayName,
-          },
-          where: {
-            email: primaryEmail?.email,
-          },
-        });
-
-        done(null, user);
-      },
-    ),
-  );
-
-  passport.serializeUser(function (user: any, cb) {
-    process.nextTick(function () {
+passport.deserializeUser(async function (id: string, cb) {
+  try {
+    // Actually fetch the user from database using the ID
+    const user = await db.user.findUnique({ 
+      where: { id } 
+    });
+    
+    if (user) {
       return cb(null, {
         id: user.id,
         username: user.username,
-        picture: user.picture,
+        name: user.name,
+        email: user.email,
+        // Add other fields you need
       });
-    });
-  });
-
-  passport.deserializeUser(function (user: any, cb) {
-    process.nextTick(function () {
-      return cb(null, user);
-    });
-  });
-}
+    } else {
+      return cb(null, false);
+    }
+  } catch (error) {
+    return cb(error, null);
+  }
+})}
