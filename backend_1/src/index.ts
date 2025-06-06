@@ -39,7 +39,7 @@ app.use(
 );
 
 app.use('/auth', authRouter);
-app.listen(process.env.APP_PORT, ()=>{console.log(`Express server at port ${process.env.APP_PORT}`)})
+app.listen(process.env.APP_PORT, ()=>{console.log(`Express server at port  ${process.env.APP_PORT}`)})
 
 
 
