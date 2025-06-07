@@ -4,6 +4,7 @@ import LandingBtn from "@/components/LandingBtn";
 import { useEffect, useState } from "react";
 import { Chess } from "chess.js";
 import { useGameStore } from "@/stores/game.store";
+import { ColorTag } from "@/components/Colortag";
 
 //remove code repetion using commons or monoRepo
 export const INIT_GAME = "init_game";
@@ -52,22 +53,46 @@ const Game = () => {
   };
 
   return (
-    <div className="flex justify-center ">
-      <div className="pt-8 max-w-screen-lg w-full">
-        <div className="grid grid-cols-6 gap-4 ">
-          <div className="col-span-4  w-full flex justify-center ">
-            <ChessBoard board={board} socket={socket}  />
+      <div className="flex justify-center">
+        <div className="bg-blue-300 h-screen w-50 absolute left-0 top-0">
+          <div className="text-2xl font-bold text-center pt-4">
+            Chessables
           </div>
-          <div className="col-span-2 bg-gray-900 flex justify-center pt-10 ">
-            <div>
-              <button onClick={handleOnPlay}>
-                {started? "" : <LandingBtn text="Play" />} 
-              </button>
+        </div>
+        <div className="pt-10 max-w-screen-lg w-full ">
+            <div className="mb-4 bg-gray-900 pt-3 ml-20 flex items-center justify-between" >
+              <div className="flex items-center ml-4">
+                <div className="pb-2 pl-3">
+                  user: "haha"
+                </div>
+                <div className="pb-2 pl-3">
+                  color: <ColorTag color={chess.turn() === "w" ? "white" : "black"} />
+                </div>
+              </div>
+              <div className="bg-gray-600 h-7 w-0.5 relative bottom-1.5" />
+              <div className="flex items-center mr-9">
+                <div className="pb-2 pl-3">
+                  user: "haha"
+                </div>
+                <div className="pb-2 pl-3">
+                  color: <ColorTag color={chess.turn() === "w" ? "white" : "black"} />
+                </div>
+              </div>
+            </div>
+          <div className="grid grid-cols-6 gap-4 ">
+            <div className="col-span-4  w-full flex justify-center">
+              <ChessBoard board={board} socket={socket}  />
+            </div>
+            <div className="col-span-2 bg-gray-900 flex justify-center pt-10 ">
+              <div>
+                <button onClick={handleOnPlay}>
+                  {started? "" : <LandingBtn text="Play" />} 
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

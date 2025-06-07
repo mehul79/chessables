@@ -21,13 +21,11 @@ type UserStore = {
     fetchUser: () => void,
     logout: () => void,
     updateUsername: (username: string)=> void,
-    username: string | null
 }
 
 const useUserStore = create<UserStore>((set) => ({
     user: null,
     isCheckingUser: false,
-    username: null,
     fetchUser: async () => {
         try {
             set({isCheckingUser: true})
@@ -71,7 +69,6 @@ const useUserStore = create<UserStore>((set) => ({
         );
         if(res.data.success){
             set({user: res.data.user})
-            set({username: res.data.user.username})
         }
         console.log(res);
         }catch(e){

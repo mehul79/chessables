@@ -1,5 +1,3 @@
-"use client";
-
 import { toast, Toaster } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/stores/game.store";
+import { useNavigate } from "react-router-dom";
 
 // Validation schema
 const formSchema = z.object({
@@ -22,6 +21,7 @@ const formSchema = z.object({
 });
 
 export default function Settings() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,8 +41,8 @@ export default function Settings() {
           error: "Failed to update username.",
         }
       );
-      // Reset form after successful submission
       form.reset();
+      navigate("/");
     } catch (error) {
       console.error("Error updating username:", error);
       toast.error("An unexpected error occurred");
