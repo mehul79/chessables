@@ -83,6 +83,19 @@ const useGameStore = create<GameStore>((set)=> ({
     started: false,
     setStarted: ()=>{
         set({started: true})
+    },
+    updateDB: async (gameId: string, moves: string[]) => {
+        try {
+            const response = await axios.post(`${BACKEND_URL}/game/update`, {
+                gameId: gameId,
+                moves: moves
+            }, {
+                withCredentials: true
+            });
+            console.log("Game updated successfully:", response.data);
+        } catch (error) {
+            console.error("Error updating game:", error);
+        }
     }
 }))
 

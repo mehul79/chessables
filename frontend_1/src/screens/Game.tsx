@@ -3,8 +3,9 @@ import { useSocket } from "@/hooks/useSocket";
 import LandingBtn from "@/components/LandingBtn";
 import { useEffect, useState } from "react";
 import { Chess } from "chess.js";
-import { useGameStore } from "@/stores/game.store";
+import { useGameStore, useUserStore } from "@/stores/game.store";
 import { ColorTag } from "@/components/Colortag";
+import { HyperText } from "@/components/magicui/hyper-text";
 
 //remove code repetion using commons or monoRepo
 export const INIT_GAME = "init_game";
@@ -14,8 +15,10 @@ export const GAME_OVER = "game_over";
 const Game = () => {
   const socket = useSocket();
   const [chess, setChess] = useState(new Chess());
+  const [color, setColor] = useState("")
   const [board, setBoard] = useState(chess.board());
-  const {started, setStarted} = useGameStore()
+  const {started, setStarted} = useGameStore();
+  const {  user } = useUserStore();
 
   useEffect(() => {
     if (!socket) {
@@ -27,7 +30,8 @@ const Game = () => {
       switch (message.type) {
         case INIT_GAME:
           setBoard(chess.board());
-          console.log("Game initialized");
+          setColor(message.playload.color);
+          console.log("Game initialized:  ", color);
           setStarted()
           break;
         case MOVE:
@@ -63,19 +67,20 @@ const Game = () => {
             <div className="mb-4 bg-gray-900 pt-3 ml-20 flex items-center justify-between" >
               <div className="flex items-center ml-4">
                 <div className="pb-2 pl-3">
-                  user: "haha"
+                  <HyperText className="text-sm inline">username: </HyperText> 
+                  <HyperText className="text-sm inline">{(user?.username || "Guest")}</HyperText>  
                 </div>
-                <div className="pb-2 pl-3">
-                  color: <ColorTag color={chess.turn() === "w" ? "white" : "black"} />
-                </div>
+                {started && (
+                  <div className="pb-2 pl-3 ">
+                    color: <ColorTag color={color === "white" ? "white" : "black"} />
+                  </div>
+                )}
               </div>
               <div className="bg-gray-600 h-7 w-0.5 relative bottom-1.5" />
               <div className="flex items-center mr-9">
                 <div className="pb-2 pl-3">
-                  user: "haha"
-                </div>
-                <div className="pb-2 pl-3">
-                  color: <ColorTag color={chess.turn() === "w" ? "white" : "black"} />
+                  <HyperText className="text-sm inline">username: </HyperText> 
+                  <HyperText className="text-sm inline">{(user?.username || "Guest")}</HyperText>
                 </div>
               </div>
             </div>
