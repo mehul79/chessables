@@ -28,6 +28,7 @@ export class Game {
         type: INIT_GAME,
         playload: {
           color: "black",
+          startTime: this.startTime,
         },
       })
     );

@@ -31,7 +31,7 @@ const Game = () => {
         case INIT_GAME:
           setBoard(chess.board());
           setColor(message.playload.color);
-          console.log("Game initialized:  ", color);
+          console.log("Game initialized");
           setStarted()
           break;
         case MOVE:
