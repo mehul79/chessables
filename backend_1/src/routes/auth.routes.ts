@@ -34,6 +34,7 @@ export const refresh = async (req: Request, res: Response) => {
       token,
       id: user.id,
       name: userDb?.name,
+      username: userDb?.username,
     });
   } else {
     res.status(401).json({ success: false, message: "Unauthorized" });
@@ -80,6 +81,7 @@ export const settings = async (req: Request, res: Response) => {
         user: {
           id: updatedUser.id,
           name: updatedUser.name,
+          username: updatedUser.username,
         },
       });
     }

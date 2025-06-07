@@ -11,7 +11,8 @@ type GameStore = {
 export type userSchema = {
     token: string,
     id: string,
-    name: string
+    name: string,
+    username?: string 
 }
 
 type UserStore = {
@@ -19,12 +20,14 @@ type UserStore = {
     isCheckingUser: boolean,
     fetchUser: () => void,
     logout: () => void,
-    updateUsername: (username: string)=> void
+    updateUsername: (username: string)=> void,
+    username: string | null
 }
 
 const useUserStore = create<UserStore>((set) => ({
     user: null,
     isCheckingUser: false,
+    username: null,
     fetchUser: async () => {
         try {
             set({isCheckingUser: true})
@@ -66,6 +69,10 @@ const useUserStore = create<UserStore>((set) => ({
             { username: username },
             { withCredentials: true }
         );
+        if(res.data.success){
+            set({user: res.data.user})
+            set({username: res.data.user.username})
+        }
         console.log(res);
         }catch(e){
             console.log(e);

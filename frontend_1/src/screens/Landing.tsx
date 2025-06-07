@@ -2,7 +2,7 @@ import LandingBtn, { Variant } from "@/components/LandingBtn";
 import { TextAnimate } from "@/components/magicui/text-animate";
 import { useUserStore } from "@/stores/game.store";
 import React from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios"
 
 
@@ -11,8 +11,14 @@ const Landing = () => {
   const navigator = useNavigate()
 
   const handleOnPlay = async() => {
-    // const tokenVal = user?.token
-    // navigator(`/game?token=${tokenVal}`);
+    if(!user){
+      alert("Please login to play the game")
+      return
+    }else if(!user.username){
+      alert("Please enter your username to play the game")
+      navigator("/settings")
+      return
+    }
     navigator("/game")
   };
 
@@ -30,7 +36,7 @@ const Landing = () => {
         <img src="/Landing.png" className="mask-t-from-50% pl-4" />
       </div>
       <div className="flex flex-col justify-center items-center gap-4">
-        <div>user: {user? user.name : "null"}</div>
+        <div>user: {user? user.username : "null"}</div>
         <h1 className="text-4xl font-extrabold">
           <TextAnimate animation="slideLeft" by="character">
             Number #2 best chess site.
