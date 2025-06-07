@@ -10,6 +10,8 @@ import passport from 'passport';
 import authRouter from './router/auth.router';
 import { COOKIE_MAX_AGE } from './utils/constants';
 import { initPassport } from './utils/passport';
+import url from 'url';
+import { extractAuthUser } from './utils/extractUser';
 dotenv.config()
 
 
@@ -48,12 +50,17 @@ const gameManager = new GameManager();
 let userCount = 0;
 
 wss.on("connection",  function connection(ws, req){
+  //@ts-ignore
+  const token: string = url.parse(req.url, true).query.token;
+  const user = extractAuthUser(token, ws);
   gameManager.addUser(ws);
   console.log(++userCount);
   ws.on("disconnect", function disconnect(){
     gameManager.removeUser(ws)
   })
 })
+
+console.log('done');
 
 
 
