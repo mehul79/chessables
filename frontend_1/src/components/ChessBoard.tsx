@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { MOVE } from "@/screens/Game";
 import { Color, PieceSymbol, Square } from "chess.js";
+import { useGameStore } from "@/stores/game.store";
 
 const ChessBoard = ({
   board,
@@ -10,6 +11,7 @@ const ChessBoard = ({
   socket: WebSocket;
 }) => {
   const [from, setFrom] = useState<Square | null>(null);
+  const {gameId, setGameId} = useGameStore();
 
   const renderedBoard = useMemo(() => {
     return board.map((row, rowIndex) => (
@@ -29,16 +31,20 @@ const ChessBoard = ({
             console.log("Dropped to:", to);
 
             if (from) {
-              socket.send(
+              const sent = socket.send(
                 JSON.stringify({
                   type: MOVE,
                   payload: {
-                    from,
-                    to
+                    gameId: gameId,
+                    move: {
+                      from,
+                      to,
+                    }
                   },
                 })
               );
               setFrom(null);
+              console.log(sent);
             }
           }
 

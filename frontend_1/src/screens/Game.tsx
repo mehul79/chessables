@@ -6,6 +6,7 @@ import { Chess } from "chess.js";
 import { useGameStore, useUserStore } from "@/stores/game.store";
 import { ColorTag } from "@/components/Colortag";
 import { HyperText } from "@/components/magicui/hyper-text";
+import { set } from "react-hook-form";
 
 //remove code repetion using commons or monoRepo
 export const INIT_GAME = "init_game";
@@ -17,7 +18,7 @@ const Game = () => {
   const [chess, setChess] = useState(new Chess());
   const [color, setColor] = useState("")
   const [board, setBoard] = useState(chess.board());
-  const {started, setStarted} = useGameStore();
+  const {started, setStarted, gameId, setGameId} = useGameStore();
   const {  user } = useUserStore();
 
   useEffect(() => {
@@ -30,8 +31,8 @@ const Game = () => {
       switch (message.type) {
         case INIT_GAME:
           setBoard(chess.board());
-          setColor(message.playload.color);
-          console.log("Game initialized");
+          setColor(message.payload.color);
+          setGameId(message.payload.gameId);
           setStarted()
           break;
         case MOVE:

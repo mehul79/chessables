@@ -107,6 +107,7 @@ export class Game {
     this.resetAbandonTimer();
     this.resetMoveTimer();
   }
+  
   async updateSecondPlayer(player2UserId: string) {
     this.player2UserId = player2UserId;
 
@@ -147,6 +148,31 @@ export class Game {
         },
       }),
     );
+    const player1Socket = socketManager.getSocket(this.player1UserId);
+    const player2Socket = this.player2UserId ? socketManager.getSocket(this.player2UserId) : null;
+
+    if (player1Socket) {
+      player1Socket.send(JSON.stringify({
+        type: INIT_GAME,
+        payload: {
+          color: 'white',
+          gameId: this.gameId,
+          fen: this.board.fen(),
+        },
+      }));
+    }
+
+    if (player2Socket) {
+      player2Socket.send(JSON.stringify({
+        type: INIT_GAME,
+        payload: {
+          color: 'black',
+          gameId: this.gameId,
+          fen: this.board.fen(),
+        },
+      }));
+    }
+    
   }
 
   async createGameInDb() {

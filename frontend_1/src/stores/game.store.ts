@@ -6,6 +6,8 @@ const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL ?? "http://localhost:30
 type GameStore = {
     started: boolean,
     setStarted: ()=>void,
+    gameId: string,
+    setGameId: (gameId: string) => void,
 }
 
 export type userSchema = {
@@ -81,7 +83,9 @@ const useUserStore = create<UserStore>((set) => ({
 
 const useGameStore = create<GameStore>((set)=> ({
     started: false,
+    gameId: "",
     setStarted: ()=>{
+        console.log("Game started");
         set({started: true})
     },
     updateDB: async (gameId: string, moves: string[]) => {
@@ -96,6 +100,11 @@ const useGameStore = create<GameStore>((set)=> ({
         } catch (error) {
             console.error("Error updating game:", error);
         }
+    },
+
+    setGameId: (gameId: string) => {
+        console.log("Game ID set to:", gameId);
+        set({ gameId: gameId });
     }
 }))
 

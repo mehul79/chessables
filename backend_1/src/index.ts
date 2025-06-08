@@ -3,13 +3,13 @@ import { GameManager } from "./GameManager";
 import express from "express";
 import cors from "cors"; // Import the CORS middleware
 import cookieParser from "cookie-parser";
-import { auth } from "./utils/auth";
 import dotenv from "dotenv";
 import session from "express-session";
 import passport from "passport";
 import authRouter from "./router/auth.router";
 import { COOKIE_MAX_AGE } from "./utils/constants";
 import { initPassport } from "./utils/passport";
+import { extractAuthUser } from "./utils/auth";
 import url from "url";
 dotenv.config();
 
@@ -27,12 +27,7 @@ app.use(
 
 initPassport();
 app.use(passport.initialize());
-// app.use(passport.authenticate('session'));
 app.use(passport.session());
-
-const allowedHosts = process.env.ALLOWED_HOSTS
-  ? process.env.ALLOWED_HOSTS.split(",")
-  : [];
 
 app.use(
   cors({
@@ -54,7 +49,10 @@ const gameManager = new GameManager();
 let userCount = 0;
 
 wss.on("connection", function connection(ws, req) {
-  gameManager.addUser(ws);
+  //@ts-ignore
+  const token: string = url.parse(req.url, true).query.token;
+  const user = extractAuthUser(token, ws);
+  gameManager.addUser(user);
   console.log(++userCount);
   ws.on("disconnect", function disconnect() {
     gameManager.removeUser(ws);

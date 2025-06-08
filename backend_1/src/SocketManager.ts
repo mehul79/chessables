@@ -69,6 +69,25 @@ class SocketManager {
     }
     this.userRoomMappping.delete(user.userId);
   }
+
+  getSocket(userId: string): WebSocket | null {
+    const roomId = this.userRoomMappping.get(userId);
+    if (!roomId) {
+      console.error("User is not in any room?");
+      return null;
+    }
+    const users = this.interestedSockets.get(roomId);
+    if (!users) {
+      console.error("No users in room?");
+      return null;
+    }
+    const user = users.find((u) => u.userId === userId);
+    if (!user) {
+      console.error("User not found in room?");
+      return null;
+    }
+    return user.socket;
+  }
 }
 
 export const socketManager = SocketManager.getInstance();
