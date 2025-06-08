@@ -37,9 +37,7 @@ class SocketManager {
 
   addUser(user: User, roomId: string) {
     this.interestedSockets.set(roomId, [
-      ...(this.interestedSockets.get(roomId) || []),
-      user,
-    ]);
+      ...(this.interestedSockets.get(roomId) || []),user]);
     this.userRoomMappping.set(user.userId, roomId);
   }
 
