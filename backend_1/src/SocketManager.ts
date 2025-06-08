@@ -18,7 +18,9 @@ export class User {
 
 class SocketManager {
   private static instance: SocketManager;
+  //mapping of room IDs to a list of User objects (users in that room)
   private interestedSockets: Map<string, User[]>;
+  //reverse lookup from userId to their current roomId
   private userRoomMappping: Map<string, string>;
 
   private constructor() {
@@ -59,8 +61,8 @@ class SocketManager {
       console.error("User was not interested in any room?");
       return;
     }
-    const room = this.interestedSockets.get(roomId) || [];
-    const remainingUsers = room.filter((u) => u.userId !== user.userId);
+    const UsersinRoom = this.interestedSockets.get(roomId) || [];
+    const remainingUsers = UsersinRoom.filter((u) => u.userId !== user.userId);
     this.interestedSockets.set(roomId, remainingUsers);
     if (this.interestedSockets.get(roomId)?.length === 0) {
       this.interestedSockets.delete(roomId);

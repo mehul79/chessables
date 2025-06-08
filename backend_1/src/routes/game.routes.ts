@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 export function getGame(req: Request, res: Response){
-
+    
 }
 
 export function getGames(req: Request, res: Response){

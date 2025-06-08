@@ -58,11 +58,11 @@ const Game = () => {
 
   return (
       <div className="flex justify-center">
-        <div className="bg-blue-300 h-screen w-50 absolute left-0 top-0">
+        {/* <div className="bg-blue-300 h-screen w-50 absolute left-0 top-0">
           <div className="text-2xl font-bold text-center pt-4">
             Chessables
           </div>
-        </div>
+        </div> */}
         <div className="pt-10 max-w-screen-lg w-full ">
             <div className="mb-4 bg-gray-900 pt-3 ml-20 flex items-center justify-between" >
               <div className="flex items-center ml-4">

@@ -1,6 +1,8 @@
 import WebSocket from "ws";
 import { INIT_GAME, MOVE } from "./messages";
 import { Game } from "./Game";
+import db from "./utils/db";
+import { User } from "@prisma/client";
 
 export class GameManager {
   private games: Game[];
