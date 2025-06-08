@@ -1,37 +1,55 @@
-import { Chess } from "chess.js";
+import { Chess, Square } from "chess.js";
+import { randomUUID } from "crypto";
 import WebSocket from "ws";
 import { GAME_OVER, INIT_GAME, MOVE } from "./messages";
 
-export class Game {
-  public player1: WebSocket;
-  public player2: WebSocket;
-  private board: Chess;
-  private startTime: Date;
+type GAME_STATUS = 'IN_PROGRESS' | 'COMPLETED' | 'ABANDONED' | 'TIME_UP' | 'PLAYER_EXIT';
+type GAME_RESULT = "WHITE_WINS" | "BLACK_WINS" | "DRAW";
 
-  constructor(player1: WebSocket, player2: WebSocket) {
-    this.player1 = player1;
-    this.player2 = player2;
+export function isPromoting(chess: Chess, from: Square, to: Square) {
+  if (!from) {
+    return false;
+  }
+  const piece = chess.get(from);
+  if (piece?.type !== 'p') {
+    return false;
+  }
+  if (piece.color !== chess.turn()) {
+    return false;
+  }
+  if (!['1', '8'].some((it) => to.endsWith(it))) {
+    return false;
+  }
+  return chess
+    .moves({ square: from, verbose: true })
+    .map((it) => it.to)
+    .includes(to);
+}
+
+export class Game {
+  public gameId: string;
+  public player1UserId: string;
+  public player2UserId: string | null;
+  public board: Chess;
+  private moveCount = 0;
+  private timer: NodeJS.Timeout | null = null;
+  private moveTimer: NodeJS.Timeout | null = null;
+  public result: GAME_RESULT | null = null;
+  private player1TimeConsumed = 0;
+  private player2TimeConsumed = 0;
+  private startTime = new Date(Date.now());
+  private lastMoveTime = new Date(Date.now());
+
+  constructor(player1: string, player2: string | null, gameId?: string, startTime?: Date) {
+    this.player1UserId = player1;
+    this.player2UserId = player2;
     this.board = new Chess();
     this.startTime = new Date();
-    this.player1.send(
-      JSON.stringify({
-        type: INIT_GAME,
-        playload: {
-          color: "white",
-          startTime: this.startTime,
-        },
-      })
-    );
-
-    this.player2.send(
-      JSON.stringify({
-        type: INIT_GAME,
-        playload: {
-          color: "black",
-          startTime: this.startTime,
-        },
-      })
-    );
+    this.gameId = gameId ?? randomUUID();
+    if (startTime) {
+      this.startTime = startTime;
+      this.lastMoveTime = startTime;
+    }
   }
 
   makeMove(socket: WebSocket, move: { from: string; to: string }) {
@@ -93,6 +111,7 @@ export class Game {
     );
 
     //update the board
+    
     //push the move
 
     //check if the game is over

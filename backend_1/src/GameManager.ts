@@ -3,11 +3,12 @@ import { INIT_GAME, MOVE } from "./messages";
 import { Game } from "./Game";
 import db from "./utils/db";
 import { User } from "@prisma/client";
+import { socketManager } from "./SocketManager";
 
 export class GameManager {
   private games: Game[];
-  private pendingUser: WebSocket | null;
-  private users: WebSocket[];
+  private pendingUser: string | null;
+  private users: User[];
 
   constructor() {
     this.games = [];
@@ -15,14 +16,23 @@ export class GameManager {
     this.users = [];
   }
 
-  addUser(socket: WebSocket) {
-    this.users.push(socket);
-    this.addHandler(socket);
+  addUser(user: User) {
+    this.users.push(user);
+    this.addHandler(user);
   }
 
   removeUser(socket: WebSocket) {
-    this.users = this.users.filter((user) => user != socket);
-    //Stop the game here because the user left
+    const user = this.users.find((user) => user.socket === socket);
+    if (!user) {
+      console.error('User not found?');
+      return;
+    }
+    this.users = this.users.filter((user) => user.socket !== socket);
+    socketManager.removeUser(user);
+  }
+
+  removeGame(gameId: string) {
+    this.games = this.games.filter((g) => g.gameId !== gameId);
   }
 
   private addHandler(socket: WebSocket) {
