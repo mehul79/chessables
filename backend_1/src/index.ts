@@ -3,7 +3,6 @@ import { GameManager } from './GameManager';
 import express from  "express"
 import cors from "cors"; // Import the CORS middleware
 import cookieParser from 'cookie-parser';
-import { auth } from "./auth";
 import dotenv from "dotenv"
 import session from 'express-session';
 import passport from 'passport';
