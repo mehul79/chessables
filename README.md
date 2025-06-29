@@ -7,9 +7,6 @@ A real-time multiplayer chess application built with modern web technologies. Pl
 Chessables is a full-stack chess application that enables real-time multiplayer chess games. The application features Google OAuth authentication, WebSocket-based real-time gameplay, PostgreSQL database for game persistence, and a modern React frontend with drag-and-drop chess board interactions.
 
 ## 🖼️ UI Showcase
-
-_[Add screenshots of your application here]_
-
 ---
 
 ## 🏗️ Architecture
