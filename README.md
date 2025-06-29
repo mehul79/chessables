@@ -1,6 +1,6 @@
 # ♟️ Chessables
 
-A real-time multiplayer chess application built with modern web technologies. Play chess against opponents worldwide with live game updates, authentication, and a beautiful user interface.
+A real-time multiplayer chess application built with modern web technologies. Play chess against opponents worldwide with live game updates, authentication, and a beautiful user interface
 
 ## 📋 Overview
 
