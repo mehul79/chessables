@@ -3,7 +3,7 @@ import Landing from "./screens/Landing";
 import Game from "./screens/Game";
 import Login from "./screens/Login";
 import { useUserStore } from "./stores/game.store";
-import { useEffect } from "react";
+import {  useEffect } from "react";
 import Settings from "./screens/Settings";
 
 function App(){
@@ -21,6 +21,7 @@ function App(){
       </div>
     )
   }
+
 
   return(
     <div className="dark text-foreground bg-background h-screen ">

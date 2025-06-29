@@ -58,16 +58,16 @@ const Game = () => {
 
   return (
       <div className="flex justify-center">
-        <div className="bg-blue-300 h-screen w-50 absolute left-0 top-0">
+        {/* <div className="bg-blue-300 h-screen w-50 absolute left-0 top-0">
           <div className="text-2xl font-bold text-center pt-4">
             Chessables
           </div>
-        </div>
+        </div> */}
         <div className="pt-10 max-w-screen-lg w-full ">
             <div className="mb-4 bg-gray-900 pt-3 ml-20 flex items-center justify-between" >
               <div className="flex items-center ml-4">
                 <div className="pb-2 pl-3">
-                  <HyperText className="text-sm inline">username: </HyperText> 
+                  <HyperText className="text-sm inline">My Name: </HyperText> 
                   <HyperText className="text-sm inline">{(user?.username || "Guest")}</HyperText>  
                 </div>
                 {started && (
@@ -79,7 +79,7 @@ const Game = () => {
               <div className="bg-gray-600 h-7 w-0.5 relative bottom-1.5" />
               <div className="flex items-center mr-9">
                 <div className="pb-2 pl-3">
-                  <HyperText className="text-sm inline">username: </HyperText> 
+                  <HyperText className="text-sm inline">Opponent Name: </HyperText> 
                   <HyperText className="text-sm inline">{(user?.username || "Guest")}</HyperText>
                 </div>
               </div>

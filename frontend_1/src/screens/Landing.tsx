@@ -3,7 +3,6 @@ import { TextAnimate } from "@/components/magicui/text-animate";
 import { useUserStore } from "@/stores/game.store";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
 
 
 const Landing = () => {
@@ -19,7 +18,6 @@ const Landing = () => {
       navigator("/settings")
       return
     }
-    navigator("/game")
   };
 
   const handleLogin = () => {

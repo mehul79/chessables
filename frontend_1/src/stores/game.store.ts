@@ -3,11 +3,6 @@ import axios from "axios"
 
 const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL ?? "http://localhost:3000";
 
-type GameStore = {
-    started: boolean,
-    setStarted: ()=>void,
-}
-
 export type userSchema = {
     token: string,
     id: string,
@@ -78,24 +73,17 @@ const useUserStore = create<UserStore>((set) => ({
 }));
 
 
+type GameStore = {
+    started: boolean,
+    setStarted: ()=>void,
+    opponentName?: string,
+}
 
 const useGameStore = create<GameStore>((set)=> ({
     started: false,
+    opponentName: "",
     setStarted: ()=>{
         set({started: true})
-    },
-    updateDB: async (gameId: string, moves: string[]) => {
-        try {
-            const response = await axios.post(`${BACKEND_URL}/game/update`, {
-                gameId: gameId,
-                moves: moves
-            }, {
-                withCredentials: true
-            });
-            console.log("Game updated successfully:", response.data);
-        } catch (error) {
-            console.error("Error updating game:", error);
-        }
     }
 }))
 

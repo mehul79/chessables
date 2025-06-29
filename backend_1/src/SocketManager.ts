@@ -1,27 +1,29 @@
 import { randomUUID } from 'crypto';
 import { WebSocket } from 'ws';
-//@ts-ignore
-import { userJwtClaims } from './auth';
+import { userJwtClaims } from './utils/auth';
 
+
+
+//User class represents a user connected to the WebSocket server
 export class User {
   public socket: WebSocket
-  public id: string;
   public userId: string;
   public name: string;
-  public isGuest?: boolean;
 
   constructor(socket: WebSocket, userJwtClaims: userJwtClaims) {
     this.socket = socket;
     this.userId = userJwtClaims.userId;
-    this.id = randomUUID();
     this.name = userJwtClaims.name;
-    this.isGuest = userJwtClaims.isGuest;
   }
 }
 
+
+// SocketManager is a singleton class that manages WebSocket connections and broadcasts messages to users in specific rooms.
 class SocketManager {
   private static instance: SocketManager;
+  // A map that holds room IDs as keys and arrays of User objects as values, representing users interested in each room.
   private interestedSockets: Map<string, User[]>;
+  // A map that holds user IDs as keys and room IDs as values, representing the room each user is interested in.
   private userRoomMappping: Map<string, string>;
 
   private constructor() {
