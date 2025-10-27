@@ -205,107 +205,122 @@ export class Game {
     this.gameId = game.id;
   }
 
-  async addMoveToDb(move: Move, moveTimestamp: Date) {
-    
-    await db.$transaction([
-      db.move.create({
-        data: {
-          gameId: this.gameId,
-          moveNumber: this.moveCount + 1,
-          from: move.from,
-          to: move.to,
-          before: move.before,
-          after: move.after,
-          createdAt: moveTimestamp,
-          timeTaken: moveTimestamp.getTime() - this.lastMoveTime.getTime(),
-          san: move.san
-        },
-      }),
-      db.game.update({
-        data: {
-          currentFen: move.after,
-        },
-        where: {
-          id: this.gameId,
-        },
-      }),
-    ]);
+async addMoveToDb(
+  move: { from: string; to: string; san?: string; before?: string },
+  moveTimestamp: Date
+) {
+  const beforeFen = move.before || this.board.fen();
+  const afterFen = this.board.fen(); // board is already updated at this point
+  const timeTaken = moveTimestamp.getTime() - this.lastMoveTime.getTime();
+
+  await db.$transaction([
+    db.move.create({
+      data: {
+        gameId: this.gameId,
+        moveNumber: this.moveCount + 1,
+        from: move.from,
+        to: move.to,
+        before: beforeFen,
+        after: afterFen,
+        createdAt: moveTimestamp,
+        timeTaken,
+        san: move.san ?? null,
+      },
+    }),
+    db.game.update({
+      data: {
+        currentFen: afterFen,
+      },
+      where: { id: this.gameId },
+    }),
+  ]);
+}
+
+
+  async makeMove(user: User, move: Move) {
+  // Ensure correct player moves
+  if (this.board.turn() === 'w' && user.userId !== this.player1UserId) return;
+  if (this.board.turn() === 'b' && user.userId !== this.player2UserId) return;
+
+  // Stop if game already finished
+  if (this.result) {
+    console.error(`User ${user.userId} is making a move post game completion`);
+    return;
   }
 
-  async makeMove(
-    user: User,
-    move: Move
-  ) {
-    
-    // validate the type of move using zod
-    if (this.board.turn() === 'w' && user.userId !== this.player1UserId) {
-      return;
+  const moveTimestamp = new Date();
+
+  // Save FEN before move
+  const beforeFen = this.board.fen();
+
+  // Try making the move
+  let moveResult;
+  try {
+    if (isPromoting(this.board, move.from, move.to)) {
+      moveResult = this.board.move({ from: move.from, to: move.to, promotion: 'q' });
+    } else {
+      moveResult = this.board.move({ from: move.from, to: move.to });
     }
+  } catch (e) {
+    console.error('Error while making move', e);
+    return;
+  }
 
-    if (this.board.turn() === 'b' && user.userId !== this.player2UserId) {
-      return;
-    }
+  // Invalid move — stop early
+  if (!moveResult) {
+    console.error('Invalid move attempted:', move);
+    return;
+  }
 
-    if (this.result) {
-      console.error(`User ${user.userId} is making a move post game completion`);
-      return;
-    }
+  // Calculate player time consumption
+  if (this.board.turn() === 'b') {
+    this.player1TimeConsumed += moveTimestamp.getTime() - this.lastMoveTime.getTime();
+  } else {
+    this.player2TimeConsumed += moveTimestamp.getTime() - this.lastMoveTime.getTime();
+  }
 
-    const moveTimestamp = new Date(Date.now());
+  // Save to DB (no extra board.move() inside!)
+  await this.addMoveToDb(
+    {
+      from: move.from,
+      to: move.to,
+      san: moveResult.san,
+      before: beforeFen,
+    },
+    moveTimestamp
+  );
 
-    try {
-      if (isPromoting(this.board, move.from, move.to)) {
-        this.board.move({
-          from: move.from,
-          to: move.to,
-          promotion: 'q',
-        });
-      } else {
-        this.board.move({
-          from: move.from,
-          to: move.to,
-        });
-      }
-    } catch (e) {
-      console.error("Error while making move");
-      return;
-    }
+  // Reset timers
+  this.resetAbandonTimer();
+  this.resetMoveTimer();
+  this.lastMoveTime = moveTimestamp;
+  this.moveCount++;
 
-    // flipped because move has already happened
-    if (this.board.turn() === 'b') {
-      this.player1TimeConsumed = this.player1TimeConsumed + (moveTimestamp.getTime() - this.lastMoveTime.getTime());
-    }
+  // Broadcast to both players
+  socketManager.broadcast(
+    this.gameId,
+    JSON.stringify({
+      type: MOVE,
+      payload: {
+        move: moveResult,
+        player1TimeConsumed: this.player1TimeConsumed,
+        player2TimeConsumed: this.player2TimeConsumed,
+      },
+    })
+  );
 
-    if (this.board.turn() === 'w') {
-      this.player2TimeConsumed = this.player2TimeConsumed + (moveTimestamp.getTime() - this.lastMoveTime.getTime());
-    }
-
-    await this.addMoveToDb(move, moveTimestamp);
-    this.resetAbandonTimer()
-    this.resetMoveTimer();
-
-    this.lastMoveTime = moveTimestamp;
-
-    socketManager.broadcast(
-      this.gameId,
-      JSON.stringify({
-        type: MOVE,
-        payload: { move, player1TimeConsumed: this.player1TimeConsumed, player2TimeConsumed: this.player2TimeConsumed },
-      }),
-    );
-
-    if (this.board.isGameOver()) {
-      const result = this.board.isDraw()
+  // Check for game over
+  if (this.board.isGameOver()) {
+    const result = this.board.isDraw()
       ? 'DRAW'
       : this.board.turn() === 'b'
-        ? 'WHITE_WINS'
-        : 'BLACK_WINS';
-        
-      this.endGame("COMPLETED", result);
-    }
+      ? 'WHITE_WINS'
+      : 'BLACK_WINS';
 
-    this.moveCount++;
+    this.endGame('COMPLETED', result);
   }
+}
+
 
   getPlayer1TimeConsumed() {
     if (this.board.turn() === 'w') {

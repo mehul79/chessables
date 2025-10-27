@@ -18,8 +18,9 @@ const Game = () => {
   const [chess, setChess] = useState(new Chess());
   const [color, setColor] = useState("")
   const [board, setBoard] = useState(chess.board());
-  const {started, setStarted, gameId, setGameId} = useGameStore();
-  const {  user } = useUserStore();
+  const [fen, setFen] = useState(chess.fen());
+  const { started, setStarted, gameId, setGameId } = useGameStore();
+  const { user } = useUserStore();
 
   useEffect(() => {
     if (!socket) {
@@ -36,12 +37,18 @@ const Game = () => {
           setStarted()
           break;
         case MOVE:
-          const move = message.payload;
-          console.log(move);
-          chess.move(move);
+          const { move } = message.payload;
+          console.log("Received move:", move);
+          if (move.after) {
+            chess.load(move.after);
+            setFen(move.after);
+          } else {
+            chess.move({ from: move.from, to: move.to });
+          }
           setBoard(chess.board());
-          console.log("Move made", message);
+          console.log("Board updated to new position");
           break;
+
         case GAME_OVER:
           console.log("Game over", message);
           break;
@@ -58,47 +65,47 @@ const Game = () => {
   };
 
   return (
-      <div className="flex justify-center">
-        {/* <div className="bg-blue-300 h-screen w-50 absolute left-0 top-0">
+    <div className="flex justify-center">
+      {/* <div className="bg-blue-300 h-screen w-50 absolute left-0 top-0">
           <div className="text-2xl font-bold text-center pt-4">
             Chessables
           </div>
         </div> */}
-        <div className="pt-10 max-w-screen-lg w-full ">
-            <div className="mb-4 bg-gray-900 pt-3 ml-20 flex items-center justify-between" >
-              <div className="flex items-center ml-4">
-                <div className="pb-2 pl-3">
-                  <HyperText className="text-sm inline">username: </HyperText> 
-                  <HyperText className="text-sm inline">{(user?.username || "Guest")}</HyperText>  
-                </div>
-                {started && (
-                  <div className="pb-2 pl-3 ">
-                    color: <ColorTag color={color === "white" ? "white" : "black"} />
-                  </div>
-                )}
-              </div>
-              <div className="bg-gray-600 h-7 w-0.5 relative bottom-1.5" />
-              <div className="flex items-center mr-9">
-                <div className="pb-2 pl-3">
-                  <HyperText className="text-sm inline">username: </HyperText> 
-                  <HyperText className="text-sm inline">{(user?.username || "Guest")}</HyperText>
-                </div>
-              </div>
+      <div className="pt-10 max-w-screen-lg w-full ">
+        <div className="mb-4 bg-gray-900 pt-3 ml-20 flex items-center justify-between" >
+          <div className="flex items-center ml-4">
+            <div className="pb-2 pl-3">
+              <HyperText className="text-sm inline">username: </HyperText>
+              <HyperText className="text-sm inline">{(user?.username || "Guest")}</HyperText>
             </div>
-          <div className="grid grid-cols-6 gap-4 ">
-            <div className="col-span-4  w-full flex justify-center">
-              <ChessBoard board={board} socket={socket}  />
-            </div>
-            <div className="col-span-2 bg-gray-900 flex justify-center pt-10 ">
-              <div>
-                <button onClick={handleOnPlay}>
-                  {started? "" : <LandingBtn text="Play" />} 
-                </button>
+            {started && (
+              <div className="pb-2 pl-3 ">
+                color: <ColorTag color={color === "white" ? "white" : "black"} />
               </div>
+            )}
+          </div>
+          <div className="bg-gray-600 h-7 w-0.5 relative bottom-1.5" />
+          <div className="flex items-center mr-9">
+            <div className="pb-2 pl-3">
+              <HyperText className="text-sm inline">username: </HyperText>
+              <HyperText className="text-sm inline">{(user?.username || "Guest")}</HyperText>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-6 gap-4 ">
+          <div className="col-span-4  w-full flex justify-center">
+            <ChessBoard board={board} socket={socket} />
+          </div>
+          <div className="col-span-2 bg-gray-900 flex justify-center pt-10 ">
+            <div>
+              <button onClick={handleOnPlay}>
+                {started ? "" : <LandingBtn text="Play" />}
+              </button>
             </div>
           </div>
         </div>
       </div>
+    </div>
   );
 };
 
