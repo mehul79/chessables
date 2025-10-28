@@ -174,7 +174,7 @@ export class GameManager {
             gameFromDb.id,
             gameFromDb.startAt,
           );
-          game.seedMoves(gameFromDb?.moves || []);
+          // game.seedMoves(gameFromDb?.moves || []);
           this.games.push(game);
           availableGame = game;
         }

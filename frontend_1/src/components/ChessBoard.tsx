@@ -103,7 +103,7 @@ const ChessBoard = ({
   }, [board, from, socket]);
 
   return (
-    <div className="text-black border-2 border-amber-400">
+    <div className="">
       {renderedBoard}
     </div>
   );

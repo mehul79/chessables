@@ -5,6 +5,7 @@ import Login from "./screens/Login";
 import { useUserStore } from "./stores/game.store";
 import { useEffect } from "react";
 import Settings from "./screens/Settings";
+import { Toaster } from "sonner";
 
 function App(){
 
@@ -24,6 +25,7 @@ function App(){
 
   return(
     <div className="dark text-foreground bg-background h-screen ">
+    <Toaster position="top-center" richColors />
     <Routes>
       <Route path="/" element={ <Landing /> } />
       <Route path="/login" element={<Login />} /> 

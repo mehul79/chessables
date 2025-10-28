@@ -5,103 +5,225 @@ import { useEffect, useState } from "react";
 import { Chess } from "chess.js";
 import { useGameStore, useUserStore } from "@/stores/game.store";
 import { ColorTag } from "@/components/Colortag";
-import { HyperText } from "@/components/magicui/hyper-text";
-import { set } from "react-hook-form";
+import { toast } from "sonner";
 
-//remove code repetion using commons or monoRepo
 export const INIT_GAME = "init_game";
 export const MOVE = "move";
-export const GAME_OVER = "game_over";
+export const GAME_ENDED = "game_ended";
+export const GAME_ALERT = "game_alert";
+export const GAME_ADDED = "game_added";
 
 const Game = () => {
   const socket = useSocket();
-  const [chess, setChess] = useState(new Chess());
-  const [color, setColor] = useState("")
-  const [board, setBoard] = useState(chess.board());
-  const [fen, setFen] = useState(chess.fen());
-  const { started, setStarted, gameId, setGameId } = useGameStore();
+  const { started, setStarted, setGameId } = useGameStore();
   const { user } = useUserStore();
 
+  const [chess] = useState(new Chess());
+  const [board, setBoard] = useState(chess.board());
+  const [color, setColor] = useState<"white" | "black" | "">("");
+  const [whitePlayer, setWhitePlayer] = useState<string>("");
+  const [blackPlayer, setBlackPlayer] = useState<string>("");
+  const [moves, setMoves] = useState<any[]>([]);
+  const [gameResult, setGameResult] = useState<string>("");
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [whiteTime, setWhiteTime] = useState(600000);
+  const [blackTime, setBlackTime] = useState(600000);
+
   useEffect(() => {
-    if (!socket) {
-      return;
-    }
+    if (!socket) return;
+
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      console.log("message", message);
+      
       switch (message.type) {
-        case INIT_GAME:
-          setBoard(chess.board());
-          setColor(message.payload.color);
-          setGameId(message.payload.gameId);
-          setStarted()
+        case GAME_ADDED:
+          setIsWaiting(true);
+          toast.info("Waiting for opponent...");
           break;
+
+        case INIT_GAME:
+          const { color,  gameId } = message.payload;
+          console.log("aiiii: ", message.payload);
+          setColor(color || "");
+          setGameId(gameId);
+          setBoard(chess.board());
+          setStarted();
+          setIsWaiting(false);
+          setWhiteTime(600000);
+          setBlackTime(600000);
+          toast.success(`Game started! You are ${color}`);
+          break;
+
         case MOVE:
-          const { move } = message.payload;
-          console.log("Received move:", move);
+          const { move, player1TimeConsumed, player2TimeConsumed } = message.payload;
+          
           if (move.after) {
             chess.load(move.after);
-            setFen(move.after);
           } else {
             chess.move({ from: move.from, to: move.to });
           }
+          
           setBoard(chess.board());
-          console.log("Board updated to new position");
+          setMoves(prev => [...prev, { 
+            from: move.from, 
+            to: move.to,
+            san: move.san
+          }]);
+
+          setWhiteTime(600000 - player1TimeConsumed);
+          setBlackTime(600000 - player2TimeConsumed);
           break;
 
-        case GAME_OVER:
-          console.log("Game over", message);
+        case GAME_ENDED:
+          setGameResult(message.payload.result);
+          setStarted();
+          toast.info(`Game ended: ${message.payload.result}`);
+          break;
+
+        case GAME_ALERT:
+          toast.warning(message.payload.message);
           break;
       }
     };
-  }, [socket]);
+  }, [socket, chess, setStarted, setGameId]);
 
-  if (!socket) {
-    return <div>Connecting...</div>;
-  }
+  useEffect(() => {
+    if (!started || gameResult) return;
 
-  const handleOnPlay = () => {
-    socket.send(JSON.stringify({ type: INIT_GAME }));
+    const interval = setInterval(() => {
+      if (chess.turn() === 'w') {
+        setWhiteTime(prev => Math.max(0, prev - 1000));
+      } else {
+        setBlackTime(prev => Math.max(0, prev - 1000));
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [started, chess, gameResult]);
+
+  const formatTime = (ms: number) => {
+    const totalSecs = Math.floor(ms / 1000);
+    const mins = Math.floor(totalSecs / 60);
+    const secs = totalSecs % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const myName = color === "white" ? whitePlayer || user?.username || "You" : blackPlayer || user?.username || "You";
+  const opponentName = color === "white" ? blackPlayer || "Opponent" : whitePlayer || "Opponent";
+  const myTime = color === "white" ? whiteTime : blackTime;
+  const opponentTime = color === "white" ? blackTime : whiteTime;
+  const isMyTurn = (chess.turn() === 'w' && color === 'white') || (chess.turn() === 'b' && color === 'black');
+
+  if (!socket) return <div className="flex items-center justify-center h-screen">Connecting...</div>;
+
   return (
-    <div className="flex justify-center">
-      {/* <div className="bg-blue-300 h-screen w-50 absolute left-0 top-0">
-          <div className="text-2xl font-bold text-center pt-4">
-            Chessables
-          </div>
-        </div> */}
-      <div className="pt-10 max-w-screen-lg w-full ">
-        <div className="mb-4 bg-gray-900 pt-3 ml-20 flex items-center justify-between" >
-          <div className="flex items-center ml-4">
-            <div className="pb-2 pl-3">
-              <HyperText className="text-sm inline">username: </HyperText>
-              <HyperText className="text-sm inline">{(user?.username || "Guest")}</HyperText>
+    <div className="min-h-screen bg-gray-950 p-6">
+      <div className="max-w-6xl mx-auto space-y-4">
+        
+        {/* Players */}
+        <div className="bg-gray-800 rounded-lg p-4 border border-gray-700 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+              {myName.charAt(0).toUpperCase()}
             </div>
-            {started && (
-              <div className="pb-2 pl-3 ">
-                color: <ColorTag color={color === "white" ? "white" : "black"} />
-              </div>
-            )}
+            <div>
+              <div className="text-white font-semibold">{myName}</div>
+              {color && <div className="flex items-center gap-2 mt-1">
+                <ColorTag color={color} />
+                <span className={`text-sm font-mono ${isMyTurn ? 'text-green-400' : 'text-gray-400'}`}>
+                  {formatTime(myTime)}
+                </span>
+              </div>}
+            </div>
           </div>
-          <div className="bg-gray-600 h-7 w-0.5 relative bottom-1.5" />
-          <div className="flex items-center mr-9">
-            <div className="pb-2 pl-3">
-              <HyperText className="text-sm inline">username: </HyperText>
-              <HyperText className="text-sm inline">{(user?.username || "Guest")}</HyperText>
+
+          {started && <div className="text-xl font-bold text-gray-500">VS</div>}
+
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <div className="text-white font-semibold">{opponentName}</div>
+              {color && <div className="flex items-center gap-2 mt-1 justify-end">
+                <ColorTag color={color === "white" ? "black" : "white"} />
+                <span className={`text-sm font-mono ${!isMyTurn ? 'text-green-400' : 'text-gray-400'}`}>
+                  {formatTime(opponentTime)}
+                </span>
+              </div>}
+            </div>
+            <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold">
+              {opponentName.charAt(0).toUpperCase()}
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-6 gap-4 ">
-          <div className="col-span-4  w-full flex justify-center">
+
+        {/* Game Area */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          
+          {/* Board */}
+          <div className="lg:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-700">
             <ChessBoard board={board} socket={socket} />
           </div>
-          <div className="col-span-2 bg-gray-900 flex justify-center pt-10 ">
-            <div>
-              <button onClick={handleOnPlay}>
-                {started ? "" : <LandingBtn text="Play" />}
-              </button>
+
+          {/* Sidebar */}
+          <div className="space-y-4">
+            
+            {/* Controls */}
+            <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+              <h3 className="text-white font-bold mb-3">Controls</h3>
+              
+              {gameResult ? (
+                <div className="space-y-2">
+                  <div className="p-3 rounded bg-yellow-900/30 border border-yellow-600/50">
+                    <p className="text-yellow-400 text-sm text-center font-semibold">Game Ended</p>
+                    <p className="text-white text-xs text-center mt-1">{gameResult}</p>
+                  </div>
+                  <button onClick={() => socket.send(JSON.stringify({ type: INIT_GAME }))} className="w-full">
+                    <LandingBtn text="New Game" />
+                  </button>
+                </div>
+              ) : isWaiting ? (
+                <div className="p-3 rounded bg-blue-900/30 border border-blue-600/50">
+                  <p className="text-blue-400 text-sm text-center">Waiting for opponent...</p>
+                  <div className="flex justify-center mt-2">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-400"></div>
+                  </div>
+                </div>
+              ) : !started ? (
+                <button onClick={() => socket.send(JSON.stringify({ type: INIT_GAME }))} className="w-full">
+                  <LandingBtn text="Start Game" />
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  <div className={`p-2 rounded ${isMyTurn ? 'bg-green-900/30 border border-green-600/50' : 'bg-gray-900/30'}`}>
+                    <p className={`text-sm text-center ${isMyTurn ? 'text-green-400' : 'text-gray-400'}`}>
+                      {isMyTurn ? 'Your Turn' : 'Opponent\'s Turn'}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
+
+            {/* Moves */}
+            <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
+              <h3 className="text-white font-bold mb-3">Moves</h3>
+              <div className="max-h-64 overflow-y-auto space-y-1">
+                {moves.length === 0 ? (
+                  <p className="text-gray-500 text-sm">No moves yet</p>
+                ) : (
+                  Array.from({ length: Math.ceil(moves.length / 2) }, (_, i) => {
+                    const white = moves[i * 2];
+                    const black = moves[i * 2 + 1];
+                    return (
+                      <div key={i} className="flex gap-2 text-sm bg-gray-900/50 p-2 rounded">
+                        <span className="text-gray-500">{i + 1}.</span>
+                        <span className="text-white font-mono">{white.san || `${white.from}-${white.to}`}</span>
+                        {black && <span className="text-white font-mono">{black.san || `${black.from}-${black.to}`}</span>}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
