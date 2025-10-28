@@ -38,12 +38,15 @@ app.use(
 );
 
 app.use("/auth", authRouter);
+
 app.listen(process.env.APP_PORT, () => {
   console.log(`Express server at port  ${process.env.APP_PORT}`);
 });
 
 const wss = new WebSocketServer({ port: Number(process.env.WS_PORT) });
 console.log(`WS server at port ${process.env.WS_PORT}`);
+
+console.log("done");
 
 const gameManager = new GameManager();
 let userCount = 0;
@@ -54,9 +57,9 @@ wss.on("connection", function connection(ws, req) {
   const user = extractAuthUser(token, ws);
   gameManager.addUser(user);
   console.log(++userCount);
-  ws.on("disconnect", function disconnect() {
+  ws.on("close", () => {
     gameManager.removeUser(ws);
   });
 });
 
-console.log("done");
+

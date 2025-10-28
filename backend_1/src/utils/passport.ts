@@ -12,7 +12,7 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
 export function initPassport() {
   console.log("reached initPassport");
-  console.log(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+  // console.log(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
   if (
     !GOOGLE_CLIENT_ID ||
     !GOOGLE_CLIENT_SECRET 

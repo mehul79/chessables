@@ -78,12 +78,12 @@ class SocketManager {
     }
     const users = this.interestedSockets.get(roomId);
     if (!users) {
-      console.error("No users in room?");
+      console.error(`No users in room? ${roomId}`);
       return null;
     }
     const user = users.find((u) => u.userId === userId);
     if (!user) {
-      console.error("User not found in room?");
+      console.error(`User not found in room? ${userId}`);
       return null;
     }
     return user.socket;
