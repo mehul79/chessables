@@ -21,8 +21,6 @@ const Game = () => {
   const [chess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
   const [color, setColor] = useState<"white" | "black" | "">("");
-  const [whitePlayer, setWhitePlayer] = useState<string>("");
-  const [blackPlayer, setBlackPlayer] = useState<string>("");
   const [opponentName, setOpponentName] = useState<string>("");
   const [moves, setMoves] = useState<any[]>([]);
   const [gameResult, setGameResult] = useState<string>("");
@@ -110,7 +108,7 @@ const Game = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const myName = color === "white" ? whitePlayer || user?.username || "You" : blackPlayer || user?.username || "You";
+  const myName = user?.name || "You";
   const opponentDisplayName = color === "white" ? opponentName || "Opponent" : opponentName || "Opponent";
   const myTime = color === "white" ? whiteTime : blackTime;
   const opponentTime = color === "white" ? blackTime : whiteTime;

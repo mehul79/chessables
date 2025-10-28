@@ -34,7 +34,6 @@ export const refresh = async (req: Request, res: Response) => {
       token,
       id: user.id,
       name: userDb?.name,
-      username: userDb?.username,
     });
   } else {
     res.status(401).json({ success: false, message: "Unauthorized" });
@@ -64,30 +63,6 @@ export const logout = (req: Request, res: Response) => {
       res.json({ msg: "Logout successful" });
     });
   });
-};
-
-export const settings = async (req: Request, res: Response) => {
-  console.log("hehe", req.user);
-  
-  if (req.user) {
-      const user = req.user as UserDetails;
-      const updatedUser = await db.user.update({
-        where: { id: user.id },
-        data: { username: req.body.username },
-      });
-
-      res.json({
-        success: true,
-        user: {
-          id: updatedUser.id,
-          name: updatedUser.name,
-          username: updatedUser.username,
-        },
-      });
-    }
-   else {
-    res.status(401).json({ success: false, message: "Unauthorized" });
-  }
 };
 
 // Google OAuth

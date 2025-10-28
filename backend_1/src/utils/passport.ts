@@ -69,7 +69,6 @@ passport.deserializeUser(async function (id: string, cb) {
     if (user) {
       return cb(null, {
         id: user.id,
-        username: user.username,
         name: user.name,
         email: user.email,
         // Add other fields you need

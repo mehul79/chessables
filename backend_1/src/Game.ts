@@ -111,6 +111,7 @@ export class Game {
         type: INIT_GAME,
         payload: {
           color: 'white',
+          myname: WhitePlayer?.name,
           opponent_name: BlackPlayer?.name,
           gameId: this.gameId,
           fen: this.board.fen(),
@@ -123,6 +124,7 @@ export class Game {
         type: INIT_GAME,
         payload: {
           color: 'black',
+          myname: BlackPlayer?.name,
           opponent_name: WhitePlayer?.name,
           gameId: this.gameId,
           fen: this.board.fen(),
