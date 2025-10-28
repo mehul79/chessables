@@ -25,10 +25,10 @@ console.log(chess.history({ verbose: true }));
 // //          a  b  c  d  e  f  g  h
 
 
-console.log(chess.moves())
-console.log(chess.move("e4"));
+// console.log(chess.moves())
+// console.log(chess.move("e4"));
 
-console.log(chess.turn());
+// console.log(chess.turn());
 
 // const startTime = new Date();
 // console.log(startTime.getMinutes().toString().padStart(2, '0') + ':' + startTime.getSeconds().toString().padStart(2, '0'));
