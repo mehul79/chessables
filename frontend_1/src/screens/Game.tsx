@@ -23,6 +23,7 @@ const Game = () => {
   const [color, setColor] = useState<"white" | "black" | "">("");
   const [whitePlayer, setWhitePlayer] = useState<string>("");
   const [blackPlayer, setBlackPlayer] = useState<string>("");
+  const [opponentName, setOpponentName] = useState<string>("");
   const [moves, setMoves] = useState<any[]>([]);
   const [gameResult, setGameResult] = useState<string>("");
   const [isWaiting, setIsWaiting] = useState(false);
@@ -42,8 +43,9 @@ const Game = () => {
           break;
 
         case INIT_GAME:
-          const { color,  gameId } = message.payload;
+          const { color,  gameId, opponent_name } = message.payload;
           console.log("aiiii: ", message.payload);
+          setOpponentName(opponent_name || "");
           setColor(color || "");
           setGameId(gameId);
           setBoard(chess.board());
@@ -109,7 +111,7 @@ const Game = () => {
   };
 
   const myName = color === "white" ? whitePlayer || user?.username || "You" : blackPlayer || user?.username || "You";
-  const opponentName = color === "white" ? blackPlayer || "Opponent" : whitePlayer || "Opponent";
+  const opponentDisplayName = color === "white" ? opponentName || "Opponent" : opponentName || "Opponent";
   const myTime = color === "white" ? whiteTime : blackTime;
   const opponentTime = color === "white" ? blackTime : whiteTime;
   const isMyTurn = (chess.turn() === 'w' && color === 'white') || (chess.turn() === 'b' && color === 'black');
@@ -141,7 +143,7 @@ const Game = () => {
 
           <div className="flex items-center gap-3">
             <div className="text-right">
-              <div className="text-white font-semibold">{opponentName}</div>
+              <div className="text-white font-semibold">{opponentDisplayName}</div>
               {color && <div className="flex items-center gap-2 mt-1 justify-end">
                 <ColorTag color={color === "white" ? "black" : "white"} />
                 <span className={`text-sm font-mono ${!isMyTurn ? 'text-green-400' : 'text-gray-400'}`}>
@@ -150,7 +152,7 @@ const Game = () => {
               </div>}
             </div>
             <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold">
-              {opponentName.charAt(0).toUpperCase()}
+              {opponentDisplayName.charAt(0).toUpperCase()}
             </div>
           </div>
         </div>

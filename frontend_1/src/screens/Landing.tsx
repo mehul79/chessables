@@ -14,10 +14,6 @@ const Landing = () => {
     if(!user){
       alert("Please login to play the game")
       return
-    }else if(!user.username){
-      alert("Please enter your username to play the game")
-      navigator("/settings")
-      return
     }
     navigator("/game")
   };
@@ -36,7 +32,6 @@ const Landing = () => {
         <img src="/Landing.png" className="mask-t-from-50% pl-4" />
       </div>
       <div className="flex flex-col justify-center items-center gap-4">
-        <div>user: {user? user.username : "null"}</div>
         <h1 className="text-4xl font-extrabold">
           <TextAnimate animation="slideLeft" by="character">
             Number #2 best chess site.

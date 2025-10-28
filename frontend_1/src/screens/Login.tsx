@@ -27,10 +27,10 @@ const Login = () => {
             <img src="google.svg" alt="" className="w-4 h-4 mr-2" />
             Login with Google
           </Button>
-          <Button variant="outline" className="" onClick={github}>
+          {/* <Button variant="outline" className="" onClick={github}>
             <img src="github.svg" alt="" className="w-4 h-4 mr-2" />
             Login with GitHub
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>
