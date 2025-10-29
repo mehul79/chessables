@@ -37,11 +37,13 @@ const Game = () => {
       switch (message.type) {
         case GAME_ADDED:
           setIsWaiting(true);
+
           toast.info("Waiting for opponent...");
           break;
 
         case INIT_GAME:
           const { color,  gameId, opponent_name } = message.payload;
+          console.log(message.payload);
           setOpponentName(opponent_name || "");
           setColor(color || "");
           setGameId(gameId);

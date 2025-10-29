@@ -8,12 +8,13 @@ const requireAuth = passport.authenticate('session');
 router.get("/", (req:Request, res:Response)=>{
     res.send("inside the auth router and things are working here")
 })
+
 router.get("/refresh", refresh)
-// router.post("/settings", requireAuth, settings)
 router.get("/login/failed", loginFailed)
 router.get("/logout", logout)
 router.get("/google", google)
 router.get("/google/callback", googleCB)
+// router.post("/settings", requireAuth, settings)
 
 export default router
 

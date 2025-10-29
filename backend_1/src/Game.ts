@@ -62,6 +62,51 @@ export class Game {
       this.lastMoveTime = startTime;
     }
   }
+
+  seedMoves(
+    moves: {
+      id: string;
+      gameId: string;
+      moveNumber: number;
+      from: string;
+      to: string;
+      comments: string | null;
+      timeTaken: number | null;
+      createdAt: Date;
+    }[]
+  ) {
+    console.log(moves);
+    moves.forEach((move) => {
+      if (isPromoting(this.board, move.from as Square, move.to as Square)) {
+        this.board.move({
+          from: move.from,
+          to: move.to,
+          promotion: 'q',
+        });
+      } else {
+        this.board.move({
+          from: move.from,
+          to: move.to,
+        });
+      }
+    });
+    this.moveCount = moves.length;
+    if (moves[moves.length - 1]) {
+      this.lastMoveTime = moves[moves.length - 1].createdAt;
+    }
+
+    moves.map((move, index) => {
+      if (move.timeTaken) {
+        if (index % 2 === 0) {
+          this.player1TimeConsumed += move.timeTaken;
+        } else {
+          this.player2TimeConsumed += move.timeTaken;
+        }
+      }
+    });
+    this.resetAbandonTimer();
+    this.resetMoveTimer();
+  }
   
   async updateSecondPlayer(player2UserId: string) {
     this.player2UserId = player2UserId;

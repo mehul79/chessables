@@ -27,6 +27,16 @@ export const refresh = async (req: Request, res: Response) => {
     const userDb = await db.user.findFirst({
       where: { id: user.id },
     });
+    
+    if (!userDb) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }else{
+      await db.user.update({
+        where: { id: user.id },
+        data: { lastLogin: new Date() },
+      });
+    }
 
     const token = jwt.sign({ userId: user.id, name: userDb?.name }, JWT_SECRET);
 
