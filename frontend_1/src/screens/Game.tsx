@@ -42,7 +42,6 @@ const Game = () => {
 
         case INIT_GAME:
           const { color,  gameId, opponent_name } = message.payload;
-          console.log("aiiii: ", message.payload);
           setOpponentName(opponent_name || "");
           setColor(color || "");
           setGameId(gameId);
