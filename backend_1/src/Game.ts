@@ -148,34 +148,6 @@ export class Game {
         },
       }),
     );
-    const player1Socket = socketManager.getSocket(this.player1UserId);
-    const player2Socket = this.player2UserId ? socketManager.getSocket(this.player2UserId) : null;
-
-    if (player1Socket) {
-      player1Socket.send(JSON.stringify({
-        type: INIT_GAME,
-        payload: {
-          color: 'white',
-          myname: WhitePlayer?.name,
-          opponent_name: BlackPlayer?.name,
-          gameId: this.gameId,
-          fen: this.board.fen(),
-        },
-      }));
-    }
-
-    if (player2Socket) {
-      player2Socket.send(JSON.stringify({
-        type: INIT_GAME,
-        payload: {
-          color: 'black',
-          myname: BlackPlayer?.name,
-          opponent_name: WhitePlayer?.name,
-          gameId: this.gameId,
-          fen: this.board.fen(),
-        },
-      }));
-    }
     
   }
 

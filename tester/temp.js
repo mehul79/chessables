@@ -7,6 +7,8 @@ chess.move('e5')
 chess.move('f3')
 chess.move('Nf6')
 
+
+
 const board = chess.ascii()
 console.log(board);
 console.log(chess.history({ verbose: true }));

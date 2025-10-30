@@ -6,6 +6,8 @@ import { Chess } from "chess.js";
 import { useGameStore, useUserStore } from "@/stores/game.store";
 import { ColorTag } from "@/components/Colortag";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { color } from "framer-motion";
 
 export const INIT_GAME = "init_game";
 export const MOVE = "move";
@@ -14,45 +16,51 @@ export const GAME_ALERT = "game_alert";
 export const GAME_ADDED = "game_added";
 
 const Game = () => {
+  const navigate = useNavigate();
   const socket = useSocket();
   const { started, setStarted, setGameId } = useGameStore();
   const { user } = useUserStore();
-
   const [chess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
-  const [color, setColor] = useState<"white" | "black" | "">("");
-  const [opponentName, setOpponentName] = useState<string>("");
   const [moves, setMoves] = useState<any[]>([]);
+  const [myColor, setMyColor] = useState<"white" | "black">();
   const [gameResult, setGameResult] = useState<string>("");
   const [isWaiting, setIsWaiting] = useState(false);
   const [whiteTime, setWhiteTime] = useState(600000);
   const [blackTime, setBlackTime] = useState(600000);
+  const [whitePlayer, setWhitePlayer] = useState({ name: "" });
+  const [blackPlayer, setBlackPlayer] = useState({ name: "" });
 
   useEffect(() => {
     if (!socket) return;
-
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
       
       switch (message.type) {
         case GAME_ADDED:
           setIsWaiting(true);
-
           toast.info("Waiting for opponent...");
           break;
 
         case INIT_GAME:
-          const { color,  gameId, opponent_name } = message.payload;
+          const { gameId, whitePlayer, blackPlayer } = message.payload;
           console.log(message.payload);
-          setOpponentName(opponent_name || "");
-          setColor(color || "");
+          setWhitePlayer(whitePlayer);
+          setBlackPlayer(blackPlayer);
           setGameId(gameId);
           setBoard(chess.board());
           setStarted();
           setIsWaiting(false);
           setWhiteTime(600000);
           setBlackTime(600000);
-          toast.success(`Game started! You are ${color}`);
+          navigate(`/game/${gameId}`);
+          
+          const resolvedColor = whitePlayer?.name === user?.name ? "white" : "black";
+          setMyColor(resolvedColor);
+          console.log(resolvedColor);
+          
+          toast.success(`Game started! You are ${resolvedColor === "white" ? "White" : "Black"}`);
+          
           break;
 
         case MOVE:
@@ -102,6 +110,7 @@ const Game = () => {
     return () => clearInterval(interval);
   }, [started, chess, gameResult]);
 
+
   const formatTime = (ms: number) => {
     const totalSecs = Math.floor(ms / 1000);
     const mins = Math.floor(totalSecs / 60);
@@ -109,11 +118,13 @@ const Game = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  
   const myName = user?.name || "You";
-  const opponentDisplayName = color === "white" ? opponentName || "Opponent" : opponentName || "Opponent";
-  const myTime = color === "white" ? whiteTime : blackTime;
-  const opponentTime = color === "white" ? blackTime : whiteTime;
-  const isMyTurn = (chess.turn() === 'w' && color === 'white') || (chess.turn() === 'b' && color === 'black');
+  const opponentName = myColor === "white" ? blackPlayer?.name : whitePlayer?.name;
+  const opponentDisplayName = opponentName || "Opponent";
+  const myTime = myColor === "white" ? whiteTime : blackTime;
+  const opponentTime = myColor === "white" ? blackTime : whiteTime;
+  const isMyTurn = (chess.turn() === 'w' && myColor === 'white') || (chess.turn() === 'b' && myColor === 'black');
 
   if (!socket) return <div className="flex items-center justify-center h-screen">Connecting...</div>;
 
@@ -129,8 +140,8 @@ const Game = () => {
             </div>
             <div>
               <div className="text-white font-semibold">{myName}</div>
-              {color && <div className="flex items-center gap-2 mt-1">
-                <ColorTag color={color} />
+              {myColor && <div className="flex items-center gap-2 mt-1">
+                <ColorTag color={myColor} />
                 <span className={`text-sm font-mono ${isMyTurn ? 'text-green-400' : 'text-gray-400'}`}>
                   {formatTime(myTime)}
                 </span>
@@ -143,8 +154,8 @@ const Game = () => {
           <div className="flex items-center gap-3">
             <div className="text-right">
               <div className="text-white font-semibold">{opponentDisplayName}</div>
-              {color && <div className="flex items-center gap-2 mt-1 justify-end">
-                <ColorTag color={color === "white" ? "black" : "white"} />
+              {myColor && <div className="flex items-center gap-2 mt-1 justify-end">
+                <ColorTag color={myColor === "white" ? "black" : "white"} />
                 <span className={`text-sm font-mono ${!isMyTurn ? 'text-green-400' : 'text-gray-400'}`}>
                   {formatTime(opponentTime)}
                 </span>
@@ -160,12 +171,14 @@ const Game = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           
           {/* Board */}
-          <div className="lg:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-700">
-            <ChessBoard board={board} socket={socket} />
+          <div className="lg:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between">
+            <ChessBoard board={board} socket={socket} chess={chess} />
+            <div className="flex flex-col gap-3 items-stretch ml-4">
+              
+            </div>
           </div>
-
           {/* Sidebar */}
-          <div className="space-y-4">
+          <div className="space-y-4 ">
             
             {/* Controls */}
             <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
