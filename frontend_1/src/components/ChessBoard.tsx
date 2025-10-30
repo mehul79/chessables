@@ -71,7 +71,7 @@ const ChessBoard = ({
               key={colIndex}
               onClick={() => handleSquareClick(squareRep)}
               className={`relative w-16 h-16 flex items-center justify-center cursor-pointer ${
-                isLight ? "bg-[#727271]" : "bg-[#769656]"
+                isLight ? "bg-[#EBECD0]" : "bg-[#739552]"
               } ${from === squareRep ? "border-2 border-yellow-400" : ""}`}
             >
               {/* Dot for legal moves */}
@@ -87,7 +87,7 @@ const ChessBoard = ({
                 <img
                   draggable
                   onDragStart={() => setFrom(squareRep)}
-                  className="w-4 z-10 select-none"
+                  className="w-14 z-10 select-none"
                   src={`/${
                     square.color === "b"
                       ? square.type
