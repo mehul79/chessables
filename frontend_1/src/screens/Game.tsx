@@ -174,7 +174,8 @@ const Game = () => {
           <div className="lg:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between">
             <ChessBoard board={board} socket={socket} chess={chess} />
             <div className="flex flex-col gap-3 items-stretch ml-4">
-              
+              <LandingBtn text="Draw" variant="yellow" />
+              <LandingBtn text="Resign" variant="red" />
             </div>
           </div>
           {/* Sidebar */}

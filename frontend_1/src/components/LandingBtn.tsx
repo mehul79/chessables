@@ -13,7 +13,7 @@ const variantColors: Record<Variant, string> = {
   default: '240, 40%',  // your original hue & saturation
   green: '120, 40%',
   red:   '0,  60%',
-  yellow:'60,  70%',
+  yellow:'40,  80%',
 };
 
 const LandingBtn: React.FC<LandingBtnProps> = ({ text, variant = 'default' }) => (

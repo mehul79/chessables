@@ -6,6 +6,7 @@ import { useUserStore } from "./stores/game.store";
 import { useEffect } from "react";
 // import Settings from "./screens/Settings";
 import { Toaster } from "sonner";
+import Settings from "./screens/Settings";
 
 function App(){
 
@@ -31,6 +32,7 @@ function App(){
       <Route path="/login" element={<Login />} /> 
       <Route path="/game" element={user? <Game /> : <Login />} />
       <Route path="/game/:gameId" element={user? <Game /> : <Login />} />
+      <Route path="/settings" element={<Settings />} />
       {/* <Route path="/settings" element={<Settings />} /> */}
     </Routes>
     </div>
