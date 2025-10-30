@@ -12,6 +12,8 @@ import {
   GAME_ADDED,
   GAME_ENDED,
   EXIT_GAME,
+  RESIGN,
+  DRAW_OFFER,
 } from './messages';
 import { Game, isPromoting } from './Game';
 import db from './utils/db';
@@ -107,6 +109,26 @@ export class GameManager {
         if (game) {
           game.exitGame(user);
           this.removeGame(game.gameId)
+        }
+      }
+
+      if (message.type === RESIGN) {
+        const gameId = message.payload.gameId;
+        const game = this.games.find((game) => game.gameId === gameId);
+
+        if (game) {
+          game.resignGame(user);
+          this.removeGame(game.gameId);
+        }
+      }
+
+      if (message.type === DRAW_OFFER) {
+        const gameId = message.payload.gameId;
+        const game = this.games.find((game) => game.gameId === gameId);
+
+        if (game) {
+          game.drawGame();
+          this.removeGame(game.gameId);
         }
       }
 

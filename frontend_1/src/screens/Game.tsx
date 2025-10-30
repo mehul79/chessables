@@ -7,7 +7,9 @@ import { useGameStore, useUserStore } from "@/stores/game.store";
 import { ColorTag } from "@/components/Colortag";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { color } from "framer-motion";
+import Draw from "@/components/Draw";
+import Resign from "@/components/Resign";
+import Modal from "@/components/Modal";
 
 export const INIT_GAME = "init_game";
 export const MOVE = "move";
@@ -18,18 +20,14 @@ export const GAME_ADDED = "game_added";
 const Game = () => {
   const navigate = useNavigate();
   const socket = useSocket();
-  const { started, setStarted, setGameId } = useGameStore();
+  const { started, setStarted, setGameId, setGameResult, gameResult, whitePlayer, setWhitePlayer, blackPlayer, setBlackPlayer, myColor, setMyColor } = useGameStore();
   const { user } = useUserStore();
   const [chess] = useState(new Chess());
   const [board, setBoard] = useState(chess.board());
-  const [moves, setMoves] = useState<any[]>([]);
-  const [myColor, setMyColor] = useState<"white" | "black">();
-  const [gameResult, setGameResult] = useState<string>("");
+  const [moves, setMoves] =  useState<any[]>([]);
   const [isWaiting, setIsWaiting] = useState(false);
   const [whiteTime, setWhiteTime] = useState(600000);
   const [blackTime, setBlackTime] = useState(600000);
-  const [whitePlayer, setWhitePlayer] = useState({ name: "" });
-  const [blackPlayer, setBlackPlayer] = useState({ name: "" });
 
   useEffect(() => {
     if (!socket) return;
@@ -129,8 +127,11 @@ const Game = () => {
   if (!socket) return <div className="flex items-center justify-center h-screen">Connecting...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-950 p-6">
-      <div className="max-w-6xl mx-auto space-y-4">
+    <>
+      {gameResult && <Modal />}
+      
+      <div className="min-h-screen bg-gray-950 p-6">
+        <div className="max-w-6xl mx-auto space-y-4">
         
         {/* Players */}
         <div className="bg-gray-800 rounded-lg p-4 border border-gray-700 flex items-center justify-between">
@@ -174,8 +175,8 @@ const Game = () => {
           <div className="lg:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between">
             <ChessBoard board={board} socket={socket} chess={chess} />
             <div className="flex flex-col gap-3 items-stretch ml-4">
-              <LandingBtn text="Draw" variant="yellow" />
-              <LandingBtn text="Resign" variant="red" />
+              <Draw />
+              <Resign />
             </div>
           </div>
           {/* Sidebar */}
@@ -243,6 +244,7 @@ const Game = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

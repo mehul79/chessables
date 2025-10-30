@@ -336,6 +336,15 @@ async addMoveToDb(
   async exitGame(user : User) {
     this.endGame('PLAYER_EXIT', user.userId === this.player2UserId ? 'WHITE_WINS' : 'BLACK_WINS');
   }
+ 
+  async resignGame(user: User) {
+    const result: GAME_RESULT = user.userId === this.player1UserId ? 'BLACK_WINS' : 'WHITE_WINS';
+    this.endGame('COMPLETED', result);
+  }
+
+  async drawGame() {
+    this.endGame('COMPLETED', 'DRAW');
+  }
 
   async endGame(status: GAME_STATUS, result: GAME_RESULT) {
     const updatedGame = await db.game.update({

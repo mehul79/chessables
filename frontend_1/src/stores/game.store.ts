@@ -3,11 +3,23 @@ import axios from "axios"
 
 const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL ?? "http://localhost:3000";
 
+type Player = {
+    name: string;
+}
+
 type GameStore = {
     started: boolean,
     setStarted: ()=>void,
     gameId: string,
     setGameId: (gameId: string) => void,
+    gameResult: GAME_RESULT,
+    setGameResult: (game_result: GAME_RESULT) => void,
+    whitePlayer: Player,
+    setWhitePlayer: (player: Player) => void,
+    blackPlayer: Player,
+    setBlackPlayer: (player: Player) => void,
+    myColor: "white" | "black" | undefined,
+    setMyColor: (color: "white" | "black") => void,
 }
 
 export type userSchema = {
@@ -79,14 +91,31 @@ const useUserStore = create<UserStore>((set) => ({
     }
 }));
 
-
+type GAME_RESULT = "WHITE_WINS" | "BLACK_WINS" | "DRAW" ;
 
 const useGameStore = create<GameStore>((set)=> ({
     started: false,
     gameId: "",
+    gameResult: "" as GAME_RESULT,
+    whitePlayer: { name: "" },
+    blackPlayer: { name: "" },
+    myColor: undefined,
+    
     setStarted: ()=>{
         console.log("Game started");
         set({started: true})
+    },
+    
+    setWhitePlayer: (player: Player) => {
+        set({ whitePlayer: player });
+    },
+    
+    setBlackPlayer: (player: Player) => {
+        set({ blackPlayer: player });
+    },
+    
+    setMyColor: (color: "white" | "black") => {
+        set({ myColor: color });
     },
     updateDB: async (gameId: string, moves: string[]) => {
         try {
@@ -105,7 +134,13 @@ const useGameStore = create<GameStore>((set)=> ({
     setGameId: (gameId: string) => {
         console.log("Game ID set to:", gameId);
         set({ gameId: gameId });
+    },
+
+    setGameResult: (game_result: GAME_RESULT) => {
+        console.log("Game result set to:", game_result);
+        set({ gameResult: game_result });
     }
+
 }))
 
 export { useUserStore, useGameStore }

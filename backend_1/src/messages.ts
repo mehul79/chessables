@@ -11,3 +11,5 @@ export const GAME_ALERT = 'game_alert';
 export const GAME_ADDED = 'game_added';
 export const GAME_TIME = 'game_time';
 export const EXIT_GAME = 'exit_game';
+export const RESIGN = 'resign';
+export const DRAW_OFFER = 'draw_offer';
