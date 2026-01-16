@@ -10,10 +10,6 @@ const Login = () => {
     window.open(`${BACKEND_URL}/auth/google`, "_self");
   };
 
-  const github = () => {
-    window.open(`${BACKEND_URL}/auth/github`, "_self");
-  };
-
   return (
     <div className="">
       <div className="h-screen flex justify-center flex-col items-center ">

@@ -34,7 +34,6 @@ type UserStore = {
     isCheckingUser: boolean,
     fetchUser: () => void,
     logout: () => void,
-    updateUsername: (username: string)=> void,
 }
 
 const useUserStore = create<UserStore>((set) => ({
@@ -43,11 +42,11 @@ const useUserStore = create<UserStore>((set) => ({
     fetchUser: async () => {
         try {
             set({isCheckingUser: true})
-            // console.log("inside the fetch functions");
+            console.log("inside the fetch functions");
             const response = await axios.get(`${BACKEND_URL}/auth/refresh`, {
                 withCredentials: true
             });
-            console.log(response);
+            // console.log("haha: ", response);
             const user: userSchema = response.data;
             set({ user: user });
             set({isCheckingUser: false})
@@ -72,23 +71,6 @@ const useUserStore = create<UserStore>((set) => ({
             console.error("Error while loggin out: ", e)
         }
     },
-
-    updateUsername: async(username: string) =>{
-        try{
-            console.log(username);
-            const res = await axios.post(
-            `${BACKEND_URL}/auth/settings`,
-            { username: username },
-            { withCredentials: true }
-        );
-        if(res.data.success){
-            set({user: res.data.user})
-        }
-        console.log(res);
-        }catch(e){
-            console.log(e);
-        }
-    }
 }));
 
 type GAME_RESULT = "WHITE_WINS" | "BLACK_WINS" | "DRAW" ;

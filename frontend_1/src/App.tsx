@@ -4,7 +4,6 @@ import Game from "./screens/Game";
 import Login from "./screens/Login";
 import { useUserStore } from "./stores/game.store";
 import { useEffect } from "react";
-// import Settings from "./screens/Settings";
 import { Toaster } from "sonner";
 import Settings from "./screens/Settings";
 

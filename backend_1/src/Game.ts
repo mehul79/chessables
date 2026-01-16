@@ -11,7 +11,7 @@ import { socketManager, User } from './SocketManager';
 type GAME_STATUS = 'IN_PROGRESS' | 'COMPLETED' | 'ABANDONED' | 'TIME_UP' | 'PLAYER_EXIT';
 type GAME_RESULT = "WHITE_WINS" | "BLACK_WINS" | "DRAW";
 
-const GAME_TIME_MS = 10 * 60 * 60 * 1000;
+const GAME_TIME_MS = 60 * 60 * 1000; //after 10 minutes game is over
 
 export function isPromoting(chess: Chess, from: Square, to: Square) {
   if (!from) {
@@ -163,9 +163,9 @@ export class Game {
         startAt: this.startTime,
         currentFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
         whitePlayer: {
-          connect: {
-            id: this.player1UserId,
-          },
+          connect: { //as whitePlayer is a relational field in this code
+            id: this.player1UserId
+          }
         },
         blackPlayer: {
           connect: {
@@ -181,36 +181,36 @@ export class Game {
     this.gameId = game.id;
   }
 
-async addMoveToDb(
-  move: { from: string; to: string; san?: string; before?: string },
-  moveTimestamp: Date
-) {
-  const beforeFen = move.before || this.board.fen();
-  const afterFen = this.board.fen(); // board is already updated at this point
-  const timeTaken = moveTimestamp.getTime() - this.lastMoveTime.getTime();
-
-  await db.$transaction([
-    db.move.create({
-      data: {
-        gameId: this.gameId,
-        moveNumber: this.moveCount + 1,
-        from: move.from,
-        to: move.to,
-        before: beforeFen,
-        after: afterFen,
-        createdAt: moveTimestamp,
-        timeTaken,
-        san: move.san ?? null,
-      },
-    }),
-    db.game.update({
-      data: {
-        currentFen: afterFen,
-      },
-      where: { id: this.gameId },
-    }),
-  ]);
-}
+  async addMoveToDb(
+    move: { from: string; to: string; san?: string; before?: string },
+    moveTimestamp: Date
+  ) {
+    const beforeFen = move.before || this.board.fen();
+    const afterFen = this.board.fen(); // board is already updated at this point
+    const timeTaken = moveTimestamp.getTime() - this.lastMoveTime.getTime();
+  
+    await db.$transaction([
+      db.move.create({
+        data: {
+          gameId: this.gameId,
+          moveNumber: this.moveCount + 1,
+          from: move.from,
+          to: move.to,
+          before: beforeFen,
+          after: afterFen,
+          createdAt: moveTimestamp,
+          timeTaken,
+          san: move.san ?? null,
+        },
+      }),
+      db.game.update({
+        data: {
+          currentFen: afterFen,
+        },
+        where: { id: this.gameId },
+      }),
+    ]);
+  }
 
 
   async makeMove(user: User, move: Move) {

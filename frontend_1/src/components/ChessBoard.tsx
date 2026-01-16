@@ -17,14 +17,14 @@ const ChessBoard = ({
   const { gameId } = useGameStore();
 
   // Click logic
-  function handleSquareClick(squareRep: Square) {
-    const piece = chess.get(squareRep);
+  function handleSquareClick(squareRepresentation: Square) {
+    const piece = chess.get(squareRepresentation);
 
     // 1️⃣ Select or reselect a piece of current player's color
     if (piece && piece.color === chess.turn()) {
-      setFrom(squareRep);
+      setFrom(squareRepresentation);
       const moves = chess
-        .moves({ square: squareRep, verbose: true })
+        .moves({ square: squareRepresentation, verbose: true })
         .map((m) => m.to as Square);
       setLegalMoves(moves);
       return;
@@ -32,7 +32,7 @@ const ChessBoard = ({
 
     // 2️⃣ Try to make a move if one is selected
     if (from) {
-      const isLegal = legalMoves.includes(squareRep);
+      const isLegal = legalMoves.includes(squareRepresentation);
       if (isLegal) {
         if (socket.readyState === WebSocket.OPEN) {
           socket.send(
@@ -42,7 +42,7 @@ const ChessBoard = ({
                 gameId,
                 move: {
                   from,
-                  to: squareRep,
+                  to: squareRepresentation,
                 },
               },
             })
@@ -60,7 +60,7 @@ const ChessBoard = ({
     return board.map((row, rowIndex) => (
       <div key={rowIndex} className="flex">
         {row.map((square, colIndex) => {
-          const squareRep = (
+          const squareRepresentation = (
             String.fromCharCode(97 + colIndex) + (8 - rowIndex)
           ) as Square;
 
@@ -69,13 +69,13 @@ const ChessBoard = ({
           return (
             <div
               key={colIndex}
-              onClick={() => handleSquareClick(squareRep)}
+              onClick={() => handleSquareClick(squareRepresentation)}
               className={`relative w-16 h-16 flex items-center justify-center cursor-pointer ${
                 isLight ? "bg-[#EBECD0]" : "bg-[#739552]"
-              } ${from === squareRep ? "border-2 border-yellow-400" : ""}`}
+              } ${from === squareRepresentation ? "border-2 border-yellow-400" : ""}`}
             >
               {/* Dot for legal moves */}
-              {legalMoves.includes(squareRep) && (
+              {legalMoves.includes(squareRepresentation) && (
                 <div
                   className="absolute w-4 h-4 bg-black/40 rounded-full"
                   style={{ zIndex: 5 }}
@@ -85,8 +85,7 @@ const ChessBoard = ({
               {/* Piece */}
               {square && (
                 <img
-                  draggable
-                  onDragStart={() => setFrom(squareRep)}
+                  draggable={false} //makes the image both non draggle and pickable too
                   className="w-14 z-10 select-none"
                   src={`/${
                     square.color === "b"
