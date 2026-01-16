@@ -135,14 +135,10 @@ Built by Mehul Gupta as a creative chess platform and real-time gaming system. T
 
 ## 📝 TODO
 
-- [ ] Implement timer logic and move display on UI
 - [ ] Integrate database with game logic for persistence
 - [ ] Create Redis queue for faster move storage
 - [ ] Deploy to GCP instance for production
-- [ ] Improve UI/UX with cleaner design
-- [ ] Add comprehensive testing suite
 - [ ] Implement rating system and leaderboards
-- [ ] Add game replay functionality
 
 ---
 
