@@ -11,13 +11,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useSocket } from "@/hooks/useSocket";
-import { useGameStore } from "@/stores/game.store";
+
 
 export const DRAW_OFFER = "draw_offer";
 
-export default function Draw() {
+export default function Draw({ gameId }: { gameId: string }) {
   const socket = useSocket();
-  const { gameId } = useGameStore();
+
 
   const handleDraw = () => {
     if (socket && gameId) {

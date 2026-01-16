@@ -1,6 +1,7 @@
 import {Routes, Route} from "react-router-dom"
 import Landing from "./screens/Landing";
-import Game from "./screens/Game";
+import GameLobby from "./screens/GameLobby";
+import GameRoom from "./screens/GameRoom";
 import Login from "./screens/Login";
 import { useUserStore } from "./stores/game.store";
 import { useEffect } from "react";
@@ -29,8 +30,8 @@ function App(){
     <Routes>
       <Route path="/" element={ <Landing /> } />
       <Route path="/login" element={<Login />} /> 
-      <Route path="/game" element={user? <Game /> : <Login />} />
-      <Route path="/game/:gameId" element={user? <Game /> : <Login />} />
+      <Route path="/game" element={user? <GameLobby /> : <Login />} />
+      <Route path="/game/:gameId" element={user? <GameRoom /> : <Login />} />
       <Route path="/settings" element={<Settings />} />
     </Routes>
     </div>

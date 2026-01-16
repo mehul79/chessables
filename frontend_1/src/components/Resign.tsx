@@ -11,22 +11,25 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useSocket } from "@/hooks/useSocket";
-import { useGameStore } from "@/stores/game.store";
 
 export const RESIGN = "resign";
 
-export default function Resign() {
+export default function Resign({ gameId }: { gameId: string }) {
   const socket = useSocket();
-  const { gameId } = useGameStore();
+
 
   const handleResign = () => {
-    if (socket && gameId) {
-      socket.send(JSON.stringify({
-        type: RESIGN,
-        payload: { gameId }
-      }));
-    }
-  };
+      if (!socket || socket.readyState !== WebSocket.OPEN) return;
+  
+      socket.send(
+        JSON.stringify({
+          type: RESIGN,
+          payload: { gameId },
+        })
+      );
+    };
+  
+
 
   return (
     <AlertDialog>

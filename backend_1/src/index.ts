@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import session from "express-session";
 import passport from "passport";
 import authRouter from "./router/auth.router";
+import gameRouter from "./router/game.router";
 import { COOKIE_MAX_AGE } from "./utils/constants";
 import { initPassport } from "./utils/passport";
 import { extractAuthUser } from "./utils/auth";
@@ -38,6 +39,7 @@ app.use(
 );
 
 app.use("/auth", authRouter);
+app.use("/game", gameRouter)
 
 app.listen(process.env.APP_PORT, () => {
   console.log(`Express server at port  ${process.env.APP_PORT}`);

@@ -1,23 +1,29 @@
 import React, { useMemo, useState } from "react";
-import { MOVE } from "@/screens/Game";
+import { MOVE } from "@/screens/GameLobby";
 import { Chess, Color, PieceSymbol, Square } from "chess.js";
-import { useGameStore } from "@/stores/game.store";
+
 
 const ChessBoard = ({
-  board,
-  chess,
-  socket,
-}: {
-  board: ({ square: Square; type: PieceSymbol; color: Color } | null)[][];
-  chess: Chess;
-  socket: WebSocket;
-}) => {
+    board,
+    chess,
+    socket,
+    isMyTurn,
+     gameId,
+  }: {
+    board: ({ square: Square; type: PieceSymbol; color: Color } | null)[][];
+    chess: Chess;
+    socket: WebSocket;
+    isMyTurn: boolean;
+    gameId: string;
+  }) => {
   const [from, setFrom] = useState<Square | null>(null);
   const [legalMoves, setLegalMoves] = useState<Square[]>([]);
-  const { gameId } = useGameStore();
 
   // Click logic
   function handleSquareClick(squareRepresentation: Square) {
+    if (!isMyTurn) {
+       return;
+     }
     const piece = chess.get(squareRepresentation);
 
     // 1️⃣ Select or reselect a piece of current player's color

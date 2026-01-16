@@ -32,13 +32,6 @@ export default function Modal() {
                         >
                             Go Home
                         </button>
-                        
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="w-full bg-gray-900 hover:bg-gray-800 text-yellow-400 font-bold py-3 px-6 rounded-lg transition-colors duration-200"
-                        >
-                            New Game
-                        </button>
                     </div>
                 </div>
             </div>
