@@ -64,6 +64,44 @@ Chessables is a full-stack chess application that enables real-time multiplayer 
 - ✅ PostgreSQL with Prisma ORM
 - ✅ TypeScript for type safety
 - ✅ Docker containerization
+- ✅  Game Persistence
+
+## 🔒 Game Persistence (Brief)
+
+### What is stored
+Every game’s canonical state is stored in the database:
+- Current board position (FEN)
+- Ordered move list with timestamps
+- Per-move `timeTaken`
+- Players, status, and result  
+
+The database is the **single source of truth**.
+
+---
+
+### Reload / Hydration Flow
+When the frontend opens `/game/:gameId`:
+1. An HTTP API call fetches the saved game state (FEN, moves, clocks, players, status).
+2. The frontend rebuilds the UI from this data:
+   - Chess board
+   - Move list
+   - Timers
+   - Player info  
+
+This process is called **hydration**.
+
+---
+
+### Reattaching a Live Game
+If the game status is `IN_PROGRESS`:
+1. The frontend sends a `JOIN_GAME` WebSocket message.
+2. The WebSocket server:
+   - Reuses the existing in-memory `Game` instance **if it exists**, or
+   - Loads moves from the database and calls `seedMoves()` to rebuild a fresh `Game` object.
+3. The server attaches the new socket to the game room.
+4. Live play continues seamlessly.
+
+---
 
 ## 🛠️ Quick Setup
 
