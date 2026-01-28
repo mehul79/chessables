@@ -41,6 +41,10 @@ app.use(
 app.use("/auth", authRouter);
 app.use("/game", gameRouter)
 
+app.get("/", (req, res) => {
+  res.send("Server has started at 3000 we are at / route right now")
+})
+
 app.listen(process.env.APP_PORT, () => {
   console.log(`Express server at port  ${process.env.APP_PORT}`);
 });
