@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { Gamepad } from 'lucide-react';
 
 export type Variant = 'default' | 'green' | 'red' | 'yellow';

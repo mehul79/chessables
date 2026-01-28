@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { MOVE } from "@/screens/GameLobby";
 import { Chess, Color, PieceSymbol, Square } from "chess.js";
 
@@ -62,7 +62,7 @@ const ChessBoard = ({
     }
   }
 
-  const renderedBoard = useMemo(() => {
+const renderedBoard = useMemo(() => {
     return board.map((row, rowIndex) => (
       <div key={rowIndex} className="flex">
         {row.map((square, colIndex) => {

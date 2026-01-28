@@ -216,11 +216,11 @@ const GameRoom = () => {
     return Math.max(0, TOTAL_TIME_MS - t);
   }, [tick, player2TimeConsumed, lastMoveTime, chess, status]);
 
-  const isMyTurn =
+  const isMyTurn = Boolean(
     chess &&
     status === "IN_PROGRESS" &&
     ((chess.turn() === "w" && myColor === "white") ||
-      (chess.turn() === "b" && myColor === "black"));
+      (chess.turn() === "b" && myColor === "black")));
 
   const formatTime = (ms: number) => {
     const s = Math.floor(ms / 1000);
@@ -310,18 +310,18 @@ const GameRoom = () => {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             {/* Board */}
             <div className="lg:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between">
-              {chessRef.current && (
-                <ChessBoard
+              {chessRef.current && gameId && (
+                  <ChessBoard
                   board={board}
                   socket={socket}
                   chess={chessRef.current}
                   gameId={gameId}
                   isMyTurn={isMyTurn}
-                />
-              )}
+                /> )
+              }
 
               <div className="flex flex-col gap-3 ml-1">
-                <Resign gameId={gameId} />
+                {gameId && <Resign gameId={gameId} />}
               </div>
             </div>
 

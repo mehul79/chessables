@@ -21,7 +21,6 @@ const GameLobby = () => {
     started,
     setStarted,
     setGameId,
-    gameResult,
     setWhitePlayer,
     setBlackPlayer,
     myColor,
@@ -111,7 +110,7 @@ const GameLobby = () => {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             {/* Board */}
             <div className="lg:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between">
-              <ChessBoard board={board} socket={socket} chess={chess} />
+              <ChessBoard board={board} socket={socket} chess={chess} gameId={"fdsfs"} isMyTurn={false} /> 
             </div>
             {/* Sidebar */}
             <div className="space-y-4 ">

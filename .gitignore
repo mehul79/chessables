@@ -4,3 +4,4 @@ node_modules
 .env
 .fdsf
 chess
+dist
