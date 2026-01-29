@@ -6,16 +6,14 @@ dotenv.config();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-
-
+const AUTH_REDIRECT_URL = process.env.AUTH_REDIRECT_URL;
 
 
 export function initPassport() {
   console.log("reached initPassport");
-  // console.log(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+  // console.log(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, AUTH_REDIRECT_URL);
   if (
-    !GOOGLE_CLIENT_ID ||
-    !GOOGLE_CLIENT_SECRET 
+    !GOOGLE_CLIENT_ID ||!GOOGLE_CLIENT_SECRET || !AUTH_REDIRECT_URL
   ) {
     throw new Error(
       'Missing environment variables for authentication providers', 
@@ -27,7 +25,7 @@ export function initPassport() {
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: `${process.env.AUTH_REDIRECT_URL}`,
+        callbackURL: AUTH_REDIRECT_URL,
       },
       async function (
         accessToken: string,
@@ -47,7 +45,6 @@ export function initPassport() {
             email: profile.emails[0].value,
           },
         });
-
         done(null, user);
       },
     ),

@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const CLIENT_URL = process.env.AUTH_REDIRECT_URL;
+const CLIENT_URL = process.env.ALLOWED_HOSTS;
 const JWT_SECRET = process.env.JWT_SECRET || "mehul";
 
 interface userJwtClaims {
