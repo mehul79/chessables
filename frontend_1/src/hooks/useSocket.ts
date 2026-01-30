@@ -12,7 +12,8 @@ export function useSocket(){
         const newSocket = new WebSocket(`${WS_URL}?token=${user?.token}`);
         newSocket.onopen = () => { 
             console.log("connected");
-            setSocket(newSocket);
+          setSocket(newSocket);
+          console.log("socket set" );
         };
         newSocket.onclose = () => {
             console.log("disconnected");
