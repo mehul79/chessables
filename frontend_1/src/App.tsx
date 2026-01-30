@@ -16,13 +16,21 @@ function App(){
     fetchUser()
   }, [])
 
-  if(isCheckingUser && !user){
+  if(isCheckingUser){
     return(
       <div className="flex justify-center items-center text-4xl bg-black text-white h-screen">
         Loading...
       </div>
     )
   }
+  
+  // if(isCheckingUser && !user){
+  //   return(
+  //     <div className="flex justify-center items-center text-4xl bg-black text-white h-screen">
+  //       Loading...
+  //     </div>
+  //   )
+  // }
 
   return(
     <div className="dark text-foreground bg-background h-screen ">
