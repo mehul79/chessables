@@ -42,15 +42,17 @@ const useUserStore = create<UserStore>((set) => ({
     fetchUser: async () => {
         try {
             set({isCheckingUser: true})
-            // console.log("inside the fetch functions");
+            console.log("inside the fetch functions");
             const response = await axios.get(`${BACKEND_URL}/auth/refresh`, {
                 withCredentials: true
             });
-            // console.log("haha: ", response);
+            console.log("haha: ", response);
             const user: userSchema = response.data;
             set({ user: user });
-            set({isCheckingUser: false})
+          set({ isCheckingUser: false })
+          console.log("fetch user done");
         } catch (error) {
+            console.log("at catch")
             set({isCheckingUser: false})
             console.error("Failed to fetch user:", error);
         }
