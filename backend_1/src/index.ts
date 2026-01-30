@@ -15,6 +15,7 @@ import url from "url";
 dotenv.config();
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -22,7 +23,8 @@ app.use(
     secret: process.env.COOKIE_SECRET || "mehul",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true, maxAge: COOKIE_MAX_AGE, sameSite: "none" },
+    proxy: true,
+    cookie: { httpOnly: true,  secure: true, maxAge: COOKIE_MAX_AGE, sameSite: "none" },
   })
 );
 
@@ -44,6 +46,15 @@ app.use("/game", gameRouter)
 app.get("/", (req, res) => {
   res.send("Server has started at 3000 we are at / route right now")
 })
+
+app.get("/debug", (req, res) => {
+  res.json({
+    secure: req.secure,
+    protocol: req.protocol,
+    cookie: req.headers.cookie ?? null,
+  });
+});
+
 
 app.listen(process.env.APP_PORT, () => {
   console.log(`Express server at port  ${process.env.APP_PORT}`);
