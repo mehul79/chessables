@@ -22,7 +22,7 @@ app.use(
     secret: process.env.COOKIE_SECRET || "mehul",
     resave: false,
     saveUninitialized: false,
-    cookie: { httpOnly: true, secure: false, maxAge: COOKIE_MAX_AGE },
+    cookie: { httpOnly: true, secure: true, maxAge: COOKIE_MAX_AGE, sameSite: "none" },
   })
 );
 
