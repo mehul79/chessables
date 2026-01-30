@@ -42,7 +42,7 @@ const useUserStore = create<UserStore>((set) => ({
     fetchUser: async () => {
         try {
             set({isCheckingUser: true})
-            console.log("inside the fetch functions");
+            // console.log("inside the fetch functions");
             const response = await axios.get(`${BACKEND_URL}/auth/refresh`, {
                 withCredentials: true
             });

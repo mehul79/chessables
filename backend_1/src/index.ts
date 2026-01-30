@@ -32,7 +32,7 @@ app.use(passport.session());
 
 app.use(
   cors({
-    origin: "https://chessables.vercel.app",
+    origin: ["https://chessables.vercel.app", "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
