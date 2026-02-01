@@ -15,7 +15,7 @@ import url from "url";
 dotenv.config();
 
 const app = express();
-app.set("trust proxy", 1);
+app.set("trust proxy", 1); //todo: check if needed
 app.use(express.json());
 app.use(cookieParser());
 app.use(
