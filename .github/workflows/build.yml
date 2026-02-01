@@ -17,7 +17,7 @@ jobs:
           script: |
             set -e
 
-            cd /home/ubuntu/chessables-backend
+            cd /home/ubuntu/chessables/backend_1
 
             echo "Pulling latest code"
             git pull origin main
