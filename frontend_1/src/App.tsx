@@ -18,10 +18,10 @@ function App(){
 
 
   
-  if(isCheckingUser){
+  if(isCheckingUser && !user){
     return(
       <div className="flex justify-center items-center text-4xl bg-black text-white h-screen">
-        Loading...
+        Loading... 
       </div>
     )
   }

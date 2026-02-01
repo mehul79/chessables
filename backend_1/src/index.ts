@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   session({
-    secret: process.env.COOKIE_SECRET || "mehul",
+    secret: process.env.COOKIE_SECRET as string,
     resave: false,
     saveUninitialized: false,
     proxy: true,
