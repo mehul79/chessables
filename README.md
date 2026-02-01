@@ -2,6 +2,15 @@
 
 A real-time multiplayer chess application built with modern web technologies. Play chess against opponents worldwide with live game updates, authentication, and a beautiful user interface
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mehul79/chessables)
+
+
+[![Node](https://img.shields.io/badge/node-%E2%89%A518-brightgreen?logo=node.js)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/prisma-ORM-2D3748?logo=prisma)](https://www.prisma.io)
+[![ws](https://img.shields.io/badge/ws-WebSocket-black?logo=websocket)](https://github.com/websockets/ws)
+[![Region](https://img.shields.io/badge/Region-eu--north--1-1f73b7?logo=amazonaws&logoColor=white)](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/)
+
 ## 📋 Overview
 
 Chessables is a full-stack chess application that enables real-time multiplayer chess games. The application features Google OAuth authentication, WebSocket-based real-time gameplay, PostgreSQL database for game persistence, and a modern React frontend with drag-and-drop chess board interactions.
