@@ -9,8 +9,8 @@ Chessables is a full-stack chess application that enables real-time multiplayer 
 ## 🖼️ UI Showcase
 
 
-<img src="screens/2.png" width="500" />
-<img src="screens/4.png" width="500" />
+<img src="UI_SS/2.png" width="500" />
+<img src="UI_SS/4.png" width="500" />
 
 
 ---
