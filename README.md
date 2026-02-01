@@ -182,10 +182,11 @@ Built by Mehul Gupta as a creative chess platform and real-time gaming system. T
 
 ## 📝 TODO
 
-- [ ] Integrate database with game logic for persistence
+- [x] Integrate database with game logic for persistence
+- [x] Deploy to GCP instance for production
 - [ ] Create Redis queue for faster move storage
-- [ ] Deploy to GCP instance for production
 - [ ] Implement rating system and leaderboards
+- [ ] Add Stockfish AI opponents
 
 ---
 
