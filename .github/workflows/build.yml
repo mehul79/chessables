@@ -36,7 +36,10 @@ jobs:
                 npm ci
               
                 echo "Generating Prisma client"
+                cd src
                 npx prisma generate
+                
+                cd ..
               
                 echo "Building TypeScript"
                 tsc -b tsconfig.json
