@@ -44,7 +44,7 @@ app.use("/auth", authRouter);
 app.use("/game", gameRouter)
 
 app.get("/", (req, res) => {
-  res.send("Server has started at 3000 we are at / route right now")
+  res.send("Server has started at 3000 we are at / route right now hi sexy")
 })
 
 app.get("/debug", (req, res) => {
