@@ -16,17 +16,17 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-
-            cd /home/ubuntu/chessables/backend_1
-
-            echo "Pulling latest code"
-            git pull origin main
-
-            echo "Installing dependencies"
-            npm ci
-
-            echo "Building"
-            tsc -b
-
-            echo "Reloading app (zero downtime)"
-            pm2 reload index
+            
+              export NVM_DIR="$HOME/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+              cd /home/ubuntu/chessables/backend_1
+            
+              echo "Node:"
+              node -v
+              npm -v
+            
+              git pull origin main
+              npm ci
+              tsc -b
+              pm2 reload index
