@@ -24,7 +24,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     proxy: true,
-    cookie: { httpOnly: true,  secure: false, maxAge: COOKIE_MAX_AGE },
+    // cookie: { httpOnly: true,  secure: true, maxAge: COOKIE_MAX_AGE, sameSite: "none" }, //for prod
+    cookie: { httpOnly: true, secure: false, maxAge: COOKIE_MAX_AGE }, //for dev
   })
 );
 
