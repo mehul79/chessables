@@ -17,16 +17,29 @@ jobs:
           script: |
             set -e
             
-              export NVM_DIR="$HOME/.nvm"
-              [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            
-              cd /home/ubuntu/chessables/backend_1
-            
-              echo "Node:"
-              node -v
-              npm -v
-            
-              git pull origin main
-              npm ci
-              tsc -b
-              pm2 reload index
+              set -e
+              
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                nvm use 18
+              
+                cd /home/ubuntu/chessables/backend_1
+              
+                echo "Node:"
+                node -v
+                npm -v
+              
+                echo "Pulling code"
+                git pull origin main
+              
+                echo "Installing deps"
+                npm ci
+              
+                echo "Generating Prisma client"
+                npx prisma generate
+              
+                echo "Building TypeScript"
+                tsc -b tsconfig.json
+              
+                echo "Reloading app"
+                pm2 reload index
