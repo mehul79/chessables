@@ -167,10 +167,6 @@ PORT=3000
 # Backend callback route registered in Google Console
 AUTH_REDIRECT_URL="http://localhost:3000/auth/google/callback"
 
-# Frontend URL for CORS and post-login redirect
-ALLOWED_HOSTS="http://localhost:5173"
-```
-
 ## 🎯 Future Scope
 
 ### Enhanced Features
