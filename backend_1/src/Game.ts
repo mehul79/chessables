@@ -255,24 +255,7 @@ export class Game {
     this.player2TimeConsumed += moveTimestamp.getTime() - this.lastMoveTime.getTime();
   }
 
-  // Save to DB (no extra board.move() inside!)
-  await this.addMoveToDb(
-    {
-      from: move.from,
-      to: move.to,
-      san: moveResult.san,
-      before: beforeFen,
-    },
-    moveTimestamp
-  );
-
-  // Reset timers
-  this.resetAbandonTimer();
-  this.resetMoveTimer();
-  this.lastMoveTime = moveTimestamp;
-  this.moveCount++;
-
-  // Broadcast to both players
+  // 1. Broadcast to both players IMMEDIATELY (Low Latency)
   socketManager.broadcast(
     this.gameId,
     JSON.stringify({
@@ -284,6 +267,23 @@ export class Game {
       },
     })
   );
+
+  // 2. Save to DB in the background (Non-blocking)
+  this.addMoveToDb(
+    {
+      from: move.from,
+      to: move.to,
+      san: moveResult.san,
+      before: beforeFen,
+    },
+    moveTimestamp
+  ).catch((e) => console.error('Failed to save move to DB:', e));
+
+  // Reset timers
+  this.resetAbandonTimer();
+  this.resetMoveTimer();
+  this.lastMoveTime = moveTimestamp;
+  this.moveCount++;
 
   // Check for game over
   if (this.board.isGameOver()) {
