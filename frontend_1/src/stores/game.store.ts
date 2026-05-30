@@ -32,29 +32,31 @@ export type userSchema = {
 type UserStore = {
     user: userSchema | null,
     isCheckingUser: boolean,
-    fetchUser: () => void,
+    isBackendDown: boolean,
+    fetchUser: () => Promise<void>,
     logout: () => void,
 }
 
 const useUserStore = create<UserStore>((set) => ({
     user: null,
     isCheckingUser: true, // Start as true to prevent login flash on reload
+    isBackendDown: false,
     fetchUser: async () => {
         try {
-            set({isCheckingUser: true})
-            console.log("inside the fetch functions");
+            set({isCheckingUser: true, isBackendDown: false})
             const response = await axios.get(`${BACKEND_URL}/auth/refresh`, {
-                withCredentials: true
+                withCredentials: true,
+                timeout: 5000 // 5 seconds timeout
             });
-            console.log("haha: ", response);
             const user: userSchema = response.data;
-            set({ user: user });
-          set({ isCheckingUser: false })
-          console.log("fetch user done");
-        } catch (error) {
-            console.log("at catch")
-            set({isCheckingUser: false})
+            set({ user: user, isCheckingUser: false });
+        } catch (error: any) {
             console.error("Failed to fetch user:", error);
+            set({ isCheckingUser: false });
+            if (error.code === 'ECONNABORTED' || !error.response) {
+                // Timeout or network error
+                set({ isBackendDown: true });
+            }
         }
     },
 
