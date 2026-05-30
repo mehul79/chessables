@@ -35,7 +35,7 @@ export const getGame = async (req: Request, res: Response) => {
     }
 
     // 2️⃣ PARAM VALIDATION
-    const gameId  = req.params.gameId;
+    const gameId = req.params.gameId as string;
 
     if (!gameId) {
       res.status(400).json({
@@ -75,6 +75,7 @@ export const getGame = async (req: Request, res: Response) => {
         success: false,
         message: "Game not found",
       });
+      return;
     }
 
 
@@ -82,7 +83,7 @@ export const getGame = async (req: Request, res: Response) => {
     let player1TimeConsumed = 0;
     let player2TimeConsumed = 0;
 
-    game?.moves.forEach((move, index) => {
+    game.moves.forEach((move, index) => {
       if (!move.timeTaken) return;
       if (index % 2 === 0) {
         player1TimeConsumed += move.timeTaken;
@@ -91,40 +92,36 @@ export const getGame = async (req: Request, res: Response) => {
       }
     });
 
-    let lastMoveTime
-    if (game) {
-      // 6️⃣ LAST MOVE TIME
-      lastMoveTime =
-        game.moves.length > 0
-          ? game.moves[game.moves.length - 1].createdAt
-          : game.startAt;
-    }
+    // 6️⃣ LAST MOVE TIME
+    const lastMoveTime =
+      game.moves.length > 0
+        ? game.moves[game.moves.length - 1].createdAt
+        : game.startAt;
     
     
 
     // 7️⃣ TURN FROM FEN
-    //@ts-ignore
-    const chess = new Chess(game.currentFen);
+    const chess = new Chess(game.currentFen || undefined);
     const turn = chess.turn(); // 'w' | 'b'
 
     // 8️⃣ DETERMINE MY COLOR
-    const myColor = game?.whitePlayer.id === userDb.id ? "white" : "black";
+    const myColor = game.whitePlayer.id === userDb.id ? "white" : "black";
 
     // 9️⃣ SEND SNAPSHOT RESPONSE
     res.status(200).json({
-      gameId: game?.id,
-      status: game?.status,
-      result: game?.result,
+      gameId: game.id,
+      status: game.status,
+      result: game.result,
 
       players: {
-        white: game?.whitePlayer,
-        black: game?.blackPlayer,
+        white: game.whitePlayer,
+        black: game.blackPlayer,
       },
 
       myColor,
 
       board: {
-        currentFen: game?.currentFen,
+        currentFen: game.currentFen,
         turn,
       },
 
@@ -135,7 +132,7 @@ export const getGame = async (req: Request, res: Response) => {
         lastMoveTime,
       },
 
-      moves: game?.moves.map((m) => ({
+      moves: game.moves.map((m) => ({
         moveNumber: m.moveNumber,
         from: m.from,
         to: m.to,
