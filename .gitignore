@@ -6,4 +6,4 @@ node_modules
 chess
 dist
 .vercel
-*.pem
+package-lock.json

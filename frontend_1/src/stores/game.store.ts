@@ -38,7 +38,7 @@ type UserStore = {
 
 const useUserStore = create<UserStore>((set) => ({
     user: null,
-    isCheckingUser: false,
+    isCheckingUser: true, // Start as true to prevent login flash on reload
     fetchUser: async () => {
         try {
             set({isCheckingUser: true})

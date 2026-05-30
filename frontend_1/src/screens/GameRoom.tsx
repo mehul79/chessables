@@ -5,11 +5,12 @@ import { Chess } from "chess.js";
 import { useGameStore, useUserStore } from "@/stores/game.store";
 import { ColorTag } from "@/components/Colortag";
 import { toast } from "sonner";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Resign from "@/components/Resign";
 import Modal from "@/components/Modal";
 import axios from "axios";
-import LandingBtn from "@/components/LandingBtn";
+import { Button } from "@/components/ui/button";
+import { Play } from "lucide-react";
 
 export const MOVE = "move";
 export const GAME_ENDED = "game_ended";
@@ -23,6 +24,7 @@ const TOTAL_TIME_MS = 10 * 60 * 1000;
 const GameRoom = () => {
   const socket = useSocket();
   const { gameId } = useParams<{ gameId: string }>();
+  const navigate = useNavigate();
   const { user } = useUserStore();
   const {
     setWhitePlayer,
@@ -341,14 +343,14 @@ const GameRoom = () => {
                         {gameResult}
                       </p>
                     </div>
-                    <button
-                      onClick={() =>
-                        socket.send(JSON.stringify({ type: "init_game" }))
-                      }
-                      className="w-full"
+                    <Button
+                      onClick={() => navigate("/game")}
+                      variant="default"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold"
                     >
-                      <LandingBtn text="New Game" />
-                    </button>
+                      <Play className="w-4 h-4 mr-2" />
+                      New Game
+                    </Button>
                   </div>
                 ) : (
                   <div className="space-y-2">

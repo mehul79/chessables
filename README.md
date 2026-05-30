@@ -142,6 +142,19 @@ npm install
 npm run dev
 ```
 
+### 🚀 Deployment (Render)
+
+The backend is configured for easy deployment on Render:
+1. **Service Type:** Web Service
+2. **Build Command:** `npm install && npm run build`
+3. **Start Command:** `npm start`
+4. **Environment Variables:**
+   - `DATABASE_URL`: Your PostgreSQL connection string (e.g., from Supabase or Neon)
+   - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`: OAuth credentials
+   - `JWT_SECRET` / `COOKIE_SECRET`: Secure random strings
+   - `AUTH_REDIRECT_URL`: `https://your-backend.onrender.com/auth/google/callback`
+   - `ALLOWED_HOSTS`: `https://your-frontend.vercel.app`
+
 ### Environment Variables (.env)
 
 ```env
@@ -149,9 +162,13 @@ DATABASE_URL="postgresql://myuser:mypassword@localhost:5432/mydatabase"
 GOOGLE_CLIENT_ID="your_google_client_id"
 GOOGLE_CLIENT_SECRET="your_google_client_secret"
 JWT_SECRET="your_jwt_secret"
-APP_PORT=3000
-WS_PORT=8080
-AUTH_REDIRECT_URL="http://localhost:5173"
+PORT=3000
+
+# Backend callback route registered in Google Console
+AUTH_REDIRECT_URL="http://localhost:3000/auth/google/callback"
+
+# Frontend URL for CORS and post-login redirect
+ALLOWED_HOSTS="http://localhost:5173"
 ```
 
 ## 🎯 Future Scope

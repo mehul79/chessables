@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.ts",
-    "build": "tsc -b"
+    "build": "prisma generate && tsc -b",
+    "start": "node dist/index.js",
+    "postinstall": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +26,7 @@
     "@types/ws": "^8.18.0",
     "better-auth": "^1.2.8",
     "chess.js": "^1.4.0",
+    "connect-pg-simple": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -33,10 +36,15 @@
     "jsonwebtoken": "^9.0.2",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "pg": "^8.21.0",
+    "pg-connection-string": "^2.13.0",
     "uuid": "^11.1.0",
     "ws": "^8.18.1"
   },
   "devDependencies": {
+    "@types/connect-pg-simple": "^7.0.3",
+    "@types/pg": "^8.20.0",
+    "@types/pg-connection-string": "^0.1.1",
     "nodemon": "^3.1.9",
     "prisma": "^6.9.0",
     "ts-node": "^10.9.2",
