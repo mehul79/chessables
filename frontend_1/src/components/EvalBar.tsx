@@ -26,11 +26,16 @@ export default function EvalBar({
   // Flip bar when viewing as Black (bar bottom = Black's color)
   const bottomPct = perspective === "white" ? whitePct : 100 - whitePct;
 
+  // Show score from the bottom player's perspective (Black sees its own +/-)
+  const sign = perspective === "white" ? 1 : -1;
   const label =
     mateIn !== null
       ? `M${Math.abs(mateIn)}`
       : evaluation !== null
-        ? (evaluation >= 0 ? "+" : "") + (evaluation / 100).toFixed(1)
+        ? (() => {
+            const v = (evaluation * sign) / 100;
+            return (v >= 0 ? "+" : "") + v.toFixed(1);
+          })()
         : null;
 
   return (
@@ -45,9 +50,9 @@ export default function EvalBar({
         className="bg-white w-full transition-all duration-500 ease-in-out"
         style={{ height: `${bottomPct}%` }}
       />
-      {/* Score label */}
+      {/* Score label — top of bar, white */}
       {label && (
-        <span className="absolute bottom-1 text-[9px] font-bold text-gray-500 leading-none">
+        <span className="absolute top-1 text-[9px] font-bold text-white leading-none">
           {label}
         </span>
       )}
