@@ -1,4 +1,6 @@
 import ChessBoard from "@/components/ChessBoard";
+import EvalBar from "@/components/EvalBar";
+import { useStockfish } from "@/hooks/useStockfish";
 import { useSocket } from "@/hooks/useSocket";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Chess } from "chess.js";
@@ -194,6 +196,14 @@ const GameRoom = () => {
   // 4️⃣ DERIVED CLOCKS (NO local ticking)
   const chess = chessRef.current;
 
+  // Live Stockfish eval (recomputed every render; FEN changes on each move)
+  const currentFen = chess?.fen() ?? null;
+  const isGameOver = status === "COMPLETED" || Boolean(chess?.isGameOver());
+  const { evaluation, mateIn, isCalculating } = useStockfish(
+    currentFen,
+    isGameOver,
+  );
+
   const whiteRemaining = useMemo(() => {
     if (!chess) return TOTAL_TIME_MS;
     const now = Date.now();
@@ -312,6 +322,12 @@ const GameRoom = () => {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             {/* Board */}
             <div className="lg:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between">
+              <EvalBar
+                evaluation={evaluation}
+                mateIn={mateIn}
+                isCalculating={isCalculating}
+                perspective={myColor ?? "white"}
+              />
               {chessRef.current && gameId && (
                   <ChessBoard
                   board={board}
