@@ -27,8 +27,8 @@ const Landing = () => {
 
   return (
     <div id="root" className="grid grid-cols-2 gap-4 ">
-      <div className="h-screen flex items-center">
-        <img src="/Landing.png" className="mask-t-from-50% pl-12" />
+      <div className="h-screen flex items-center justify-end">
+        <img src="/Landing.png" className="mask-t-from-50% scale-110" />
       </div>
       <div className="flex flex-col justify-center items-center gap-4">
         <h1 className="text-4xl font-extrabold">

@@ -11,7 +11,10 @@ const Login = () => {
   };
 
   return (
-    <div className="">
+    <div className="grid grid-cols-2">
+      <div className="h-screen">
+        <img src="/Login.png" alt="" className="w-full h-full object-cover brightness-[0.6]" />
+      </div>
       <div className="h-screen flex justify-center flex-col items-center ">
         <h1 className="text-4xl font-extrabold mb-10">
             <TextAnimate animation="fadeIn" by="word">
