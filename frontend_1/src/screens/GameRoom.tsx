@@ -11,8 +11,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Resign from "@/components/Resign";
 import Modal from "@/components/Modal";
 import axios from "axios";
-import { Button } from "@/components/ui/button";
-import { Play } from "lucide-react";
+import LandingBtn from "@/components/LandingBtn";
 
 export const MOVE = "move";
 export const GAME_ENDED = "game_ended";
@@ -241,7 +240,7 @@ const GameRoom = () => {
 
   if (!hydrated || !chessRef.current) {
     return (
-      <div className="flex items-center justify-center h-screen text-white">
+      <div className="flex items-center justify-center h-screen bg-black text-white">
         Loading game…
       </div>
     );
@@ -255,7 +254,7 @@ const GameRoom = () => {
 
   if (!socket)
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-black text-white">
         Connecting...
       </div>
     );
@@ -267,12 +266,12 @@ const GameRoom = () => {
     <>
       {gameResult && <Modal />}
 
-      <div className="min-h-screen bg-gray-950 p-6">
-        <div className="max-w-6xl mx-auto space-y-4">
+      <div className="h-screen w-full bg-black overflow-hidden">
+        <div className="w-full h-full flex flex-col gap-5 px-6 py-6 lg:px-12 lg:py-8">
           {/* Players */}
-          <div className="bg-gray-800 rounded-lg p-4 border border-gray-700 flex items-center justify-between">
+          <div className="bg-white/[0.03] rounded-2xl p-5 border border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_12px_32px_-12px_rgba(0,0,0,0.7)] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-black font-bold">
                 {myName.charAt(0).toUpperCase()}
               </div>
               <div>
@@ -281,8 +280,8 @@ const GameRoom = () => {
                   <div className="flex items-center gap-2 mt-1">
                     <ColorTag color={myColor} />
                     <span
-                      className={`text-sm font-mono ${
-                        isMyTurn ? "text-green-400" : "text-gray-400"
+                      className={`text-sm font-mono tabular-nums ${
+                        isMyTurn ? "text-white" : "text-gray-500"
                       }`}
                     >
                       {formatTime(myTime)}
@@ -292,7 +291,9 @@ const GameRoom = () => {
               </div>
             </div>
 
-            <div className="text-xl font-bold text-gray-500">VS</div>
+            <div className="text-xs font-semibold tracking-widest text-gray-600">
+              VS
+            </div>
 
             <div className="flex items-center gap-3">
               <div className="text-right">
@@ -303,8 +304,8 @@ const GameRoom = () => {
                   <div className="flex items-center gap-2 mt-1 justify-end">
                     <ColorTag color={myColor === "white" ? "black" : "white"} />
                     <span
-                      className={`text-sm font-mono ${
-                        !isMyTurn ? "text-green-400" : "text-gray-400"
+                      className={`text-sm font-mono tabular-nums ${
+                        !isMyTurn ? "text-white" : "text-gray-500"
                       }`}
                     >
                       {formatTime(opponentTime)}
@@ -312,74 +313,73 @@ const GameRoom = () => {
                   </div>
                 )}
               </div>
-              <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-black font-bold">
                 {opponentDisplayName.charAt(0).toUpperCase()}
               </div>
             </div>
           </div>
 
           {/* Game Area */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          <div className="flex-1 flex flex-col lg:flex-row gap-5 min-h-0">
             {/* Board */}
-            <div className="lg:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between">
+            <div className="lg:flex-1 bg-white/[0.03] rounded-2xl p-6 border border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_12px_32px_-12px_rgba(0,0,0,0.7)] flex items-center justify-center gap-6">
               <EvalBar
                 evaluation={evaluation}
                 mateIn={mateIn}
                 isCalculating={isCalculating}
                 perspective={myColor ?? "white"}
               />
-              {chessRef.current && gameId && (
-                  <ChessBoard
-                  board={board}
-                  socket={socket}
-                  chess={chessRef.current}
-                  gameId={gameId}
-                  isMyTurn={isMyTurn}
-                /> )
-              }
+              <div className="flex items-center justify-center">
+                {chessRef.current && gameId && (
+                    <ChessBoard
+                    board={board}
+                    socket={socket}
+                    chess={chessRef.current}
+                    gameId={gameId}
+                    isMyTurn={isMyTurn}
+                  />
+                )}
+              </div>
 
-              <div className="flex flex-col gap-3 ml-1">
+              <div className="flex flex-col gap-3 self-start">
                 {gameId && <Resign gameId={gameId} />}
               </div>
             </div>
 
             {/* Sidebar */}
-            <div className="space-y-4 ">
+            <div className="flex flex-col gap-5 lg:w-80 shrink-0">
               {/* Controls */}
-              <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <h3 className="text-white font-bold mb-3">Controls</h3>
+              <div className="bg-white/[0.03] rounded-2xl p-5 border border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_12px_32px_-12px_rgba(0,0,0,0.7)]">
+                <h3 className="text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3">
+                  Controls
+                </h3>
 
                 {gameResult ? (
-                  <div className="space-y-2">
-                    <div className="p-3 rounded bg-yellow-900/30 border border-yellow-600/50">
-                      <p className="text-yellow-400 text-sm text-center font-semibold">
+                  <div className="flex flex-col gap-3">
+                    <div className="p-3 rounded-xl bg-white/[0.06] border border-white/10">
+                      <p className="text-white text-sm text-center font-semibold">
                         Game Ended
                       </p>
-                      <p className="text-white text-xs text-center mt-1">
+                      <p className="text-gray-400 text-xs text-center mt-1">
                         {gameResult}
                       </p>
                     </div>
-                    <Button
-                      onClick={() => navigate("/game")}
-                      variant="default"
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold"
-                    >
-                      <Play className="w-4 h-4 mr-2" />
-                      New Game
-                    </Button>
+                    <button onClick={() => navigate("/game")} className="w-full">
+                      <LandingBtn text="New Game" />
+                    </button>
                   </div>
                 ) : (
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <div
-                      className={`p-2 rounded ${
+                      className={`p-3 rounded-xl border transition-colors ${
                         isMyTurn
-                          ? "bg-green-900/30 border border-green-600/50"
-                          : "bg-gray-900/30"
+                          ? "bg-white/[0.08] border-white/20"
+                          : "bg-transparent border-white/10"
                       }`}
                     >
                       <p
-                        className={`text-sm text-center ${
-                          isMyTurn ? "text-green-400" : "text-gray-400"
+                        className={`text-sm text-center font-medium ${
+                          isMyTurn ? "text-white" : "text-gray-500"
                         }`}
                       >
                         {isMyTurn ? "Your Turn" : "Opponent's Turn"}
@@ -390,9 +390,11 @@ const GameRoom = () => {
               </div>
 
               {/* Moves */}
-              <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <h3 className="text-white font-bold mb-3">Moves</h3>
-                <div className="max-h-64 overflow-y-auto space-y-1">
+              <div className="flex-1 bg-white/[0.03] rounded-2xl p-5 border border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_12px_32px_-12px_rgba(0,0,0,0.7)] min-h-0 flex flex-col">
+                <h3 className="text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3">
+                  Moves
+                </h3>
+                <div className="flex-1 overflow-y-auto flex flex-col gap-1.5 pr-1">
                   {moves.length === 0 ? (
                     <p className="text-gray-500 text-sm">No moves yet</p>
                   ) : (
@@ -404,9 +406,9 @@ const GameRoom = () => {
                         return (
                           <div
                             key={i}
-                            className="flex gap-2 text-sm bg-gray-900/50 p-2 rounded"
+                            className="flex gap-2 text-sm bg-white/[0.04] px-3 py-2 rounded-lg"
                           >
-                            <span className="text-gray-500">{i + 1}.</span>
+                            <span className="text-gray-500 tabular-nums">{i + 1}.</span>
                             <span className="text-white font-mono">
                               {white.san || `${white.from}-${white.to}`}
                             </span>

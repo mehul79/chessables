@@ -32,12 +32,12 @@ export default function Resign({ gameId }: { gameId: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" size="sm" className="text-red-500 hover:text-red-400 border-red-900/50 hover:border-red-500 hover:bg-red-950/30 transition-all duration-300">
+        <Button variant="outline" size="sm" className="bg-white/[0.03] text-white border-white/10 hover:border-white/30 hover:bg-white/10 transition-colors duration-200">
           <Flag className="w-4 h-4 mr-2" />
           Resign
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="bg-gray-900 border-gray-800 text-white">
+      <AlertDialogContent className="bg-neutral-950 border-white/10 text-white shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_20px_60px_-15px_rgba(0,0,0,0.8)]">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-xl font-bold">Resign Game?</AlertDialogTitle>
           <AlertDialogDescription className="text-gray-400">
@@ -45,12 +45,12 @@ export default function Resign({ gameId }: { gameId: string }) {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
+          <AlertDialogCancel className="bg-transparent border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-colors duration-200">
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction 
+          <AlertDialogAction
             onClick={handleResign}
-            className="bg-red-600 hover:bg-red-700 text-white transition-colors"
+            className="bg-white hover:bg-gray-200 text-black transition-colors duration-200"
           >
             Resign
           </AlertDialogAction>
