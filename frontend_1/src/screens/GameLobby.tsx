@@ -60,19 +60,19 @@ const GameLobby = () => {
 
   if (!socket)
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen bg-black text-white">
         Connecting...
       </div>
     );
 
   return (
     <>
-      <div className="min-h-screen bg-gray-950 p-6">
-        <div className="max-w-6xl mx-auto space-y-4">
+      <div className="h-screen w-full bg-black overflow-hidden">
+        <div className="w-full h-full flex flex-col gap-5 px-6 py-6 lg:px-12 lg:py-8">
           {/* Players */}
-          <div className="bg-gray-800 rounded-lg p-4 border border-gray-700 flex items-center justify-between">
+          <div className="bg-white/[0.03] rounded-2xl p-5 border border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_12px_32px_-12px_rgba(0,0,0,0.7)] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-black font-bold">
                 {myName.charAt(0).toUpperCase()}
               </div>
               <div>
@@ -86,7 +86,9 @@ const GameLobby = () => {
             </div>
 
             {started && (
-              <div className="text-xl font-bold text-gray-500">VS</div>
+              <div className="text-xs font-semibold tracking-widest text-gray-600">
+                VS
+              </div>
             )}
 
             <div className="flex items-center gap-3">
@@ -100,31 +102,33 @@ const GameLobby = () => {
                   </div>
                 )}
               </div>
-              <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-black font-bold">
                 {opponentDisplayName.charAt(0).toUpperCase()}
               </div>
             </div>
           </div>
 
           {/* Game Area */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          <div className="flex-1 flex flex-col lg:flex-row gap-5 min-h-0">
             {/* Board */}
-            <div className="lg:col-span-3 bg-gray-800 rounded-lg p-4 border border-gray-700 flex justify-between">
-              <ChessBoard board={board} socket={socket} chess={chess} gameId={"fdsfs"} isMyTurn={false} /> 
+            <div className="lg:flex-1 bg-white/[0.03] rounded-2xl p-6 border border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_12px_32px_-12px_rgba(0,0,0,0.7)] flex items-center justify-center">
+              <ChessBoard board={board} socket={socket} chess={chess} gameId={"fdsfs"} isMyTurn={false} />
             </div>
             {/* Sidebar */}
-            <div className="space-y-4 ">
+            <div className="flex flex-col gap-5 lg:w-80 shrink-0">
               {/* Controls */}
-              <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <h3 className="text-white font-bold mb-3">Controls</h3>
+              <div className="bg-white/[0.03] rounded-2xl p-5 border border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_12px_32px_-12px_rgba(0,0,0,0.7)]">
+                <h3 className="text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3">
+                  Controls
+                </h3>
 
                 {isWaiting ? (
-                  <div className="p-3 rounded bg-blue-900/30 border border-blue-600/50">
-                    <p className="text-blue-400 text-sm text-center">
+                  <div className="p-3 rounded-xl bg-white/[0.06] border border-white/10">
+                    <p className="text-white text-sm text-center">
                       Waiting for opponent...
                     </p>
-                    <div className="flex justify-center mt-2">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-400"></div>
+                    <div className="flex justify-center mt-3">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                     </div>
                   </div>
                 ) : (
@@ -134,14 +138,17 @@ const GameLobby = () => {
                     }
                     className="w-full"
                   >
-                    <LandingBtn text="Start Game" />
+                    <LandingBtn text="Start Game" variant="green" />
                   </button>
                 )}
               </div>
 
               {/* Moves */}
-              <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <h3 className="text-white font-bold mb-3">Moves</h3>
+              <div className="flex-1 bg-white/[0.03] rounded-2xl p-5 border border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_12px_32px_-12px_rgba(0,0,0,0.7)] min-h-0">
+                <h3 className="text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3">
+                  Moves
+                </h3>
+                <p className="text-gray-500 text-sm">No moves yet</p>
               </div>
             </div>
           </div>
