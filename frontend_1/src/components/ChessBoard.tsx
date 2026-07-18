@@ -76,14 +76,14 @@ const renderedBoard = useMemo(() => {
             <div
               key={colIndex}
               onClick={() => handleSquareClick(squareRepresentation)}
-              className={`relative w-16 h-16 flex items-center justify-center cursor-pointer ${
+              className={`relative w-[clamp(48px,8.5vmin,92px)] h-[clamp(48px,8.5vmin,92px)] flex items-center justify-center cursor-pointer ${
                 isLight ? "bg-[#EBECD0]" : "bg-[#739552]"
               } ${from === squareRepresentation ? "border-2 border-yellow-400" : ""}`}
             >
               {/* Dot for legal moves */}
               {legalMoves.includes(squareRepresentation) && (
                 <div
-                  className="absolute w-4 h-4 bg-black/40 rounded-full"
+                  className="absolute w-[clamp(12px,2.1vmin,22px)] h-[clamp(12px,2.1vmin,22px)] bg-black/40 rounded-full"
                   style={{ zIndex: 5 }}
                 ></div>
               )}
@@ -92,7 +92,7 @@ const renderedBoard = useMemo(() => {
               {square && (
                 <img
                   draggable={false} //makes the image both non draggle and pickable too
-                  className="w-14 z-10 select-none"
+                  className="w-[85%] z-10 select-none"
                   src={`/${
                     square.color === "b"
                       ? square.type
