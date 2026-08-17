@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { MOVE } from "@/screens/GameLobby";
+import { useState } from "react";
+import { MOVE } from "@/messages";
 import { Chess, Color, PieceSymbol, Square } from "chess.js";
 
 
@@ -62,8 +62,10 @@ const ChessBoard = ({
     }
   }
 
-const renderedBoard = useMemo(() => {
-    return board.map((row, rowIndex) => (
+  // Rendered inline, not memoized: the deps that matter (board, from,
+  // legalMoves, isMyTurn) change on essentially every render that reaches here,
+  // and a memo that omits isMyTurn hands out a handler that reads a stale turn.
+  const renderedBoard = board.map((row, rowIndex) => (
       <div key={rowIndex} className="flex">
         {row.map((square, colIndex) => {
           const squareRepresentation = (
@@ -104,8 +106,7 @@ const renderedBoard = useMemo(() => {
           );
         })}
       </div>
-    ));
-  }, [board, from, legalMoves, chess]);
+  ));
 
   return <div>{renderedBoard}</div>;
 };

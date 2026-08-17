@@ -9,15 +9,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { useSocket } from "@/hooks/useSocket";
 import { Button } from "@/components/ui/button";
 import { Flag } from "lucide-react";
 
 export const RESIGN = "resign";
 
-export default function Resign({ gameId }: { gameId: string }) {
-  const socket = useSocket();
-
+export default function Resign({
+  gameId,
+  socket,
+}: {
+  gameId: string;
+  socket: WebSocket;
+}) {
   const handleResign = () => {
     if (!socket || socket.readyState !== WebSocket.OPEN) return;
 

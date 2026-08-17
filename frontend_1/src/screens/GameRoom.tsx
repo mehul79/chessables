@@ -2,7 +2,7 @@ import ChessBoard from "@/components/ChessBoard";
 import EvalBar from "@/components/EvalBar";
 import { useStockfish } from "@/hooks/useStockfish";
 import { useSocket } from "@/hooks/useSocket";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Chess } from "chess.js";
 import { useGameStore, useUserStore } from "@/stores/game.store";
 import { ColorTag } from "@/components/Colortag";
@@ -81,10 +81,9 @@ const GameRoom = () => {
   // --------------------
   // 2️⃣ HTTP HYDRATION (single source of truth)
   // --------------------
-  useEffect(() => {
+  const loadSnapshot = useCallback(async () => {
     if (!gameId) return;
 
-    (async () => {
       try {
         const res = await axios.get(`${BACKEND_URL}/game/${gameId}`, {
           withCredentials: true,
@@ -92,8 +91,10 @@ const GameRoom = () => {
 
         const data = res.data;
 
-        // Create chess.js from backend FEN
-        const chess = new Chess(data.board.currentFen);
+        // Only seed the position when we don't have one yet. Moves are written
+        // to the DB fire-and-forget, so a live broadcast is newer than
+        // currentFen — overwriting with it would rewind the board.
+        const chess = chessRef.current ?? new Chess(data.board.currentFen);
         chessRef.current = chess;
 
         // IMPORTANT: clone board array to force React re-render
@@ -121,30 +122,23 @@ const GameRoom = () => {
         console.error(e);
         toast.error("Failed to load game");
       }
-    })();
-  }, [gameId]);
+  }, [gameId, setGameResult, setWhitePlayer, setBlackPlayer, setMyColor]);
+
+  useEffect(() => {
+    loadSnapshot();
+  }, [loadSnapshot]);
 
   // 3️⃣ JOIN WEBSOCKET ROOM (live updates only)
+  //
+  // NOT gated on `hydrated`: joining only after the HTTP snapshot returns leaves
+  // a window where a move is broadcast to a room this client isn't in yet. That
+  // move is lost forever, and since neither side then believes it's their turn,
+  // the game deadlocks after the first move. Join first; the MOVE handler below
+  // re-syncs if a move lands before/without the snapshot.
   useEffect(() => {
-    if (!socket || !hydrated || !gameId) return;
+    if (!socket || !gameId) return;
 
-    if (socket.readyState === WebSocket.OPEN) {
-      socket.send(
-        JSON.stringify({
-          type: JOIN_GAME,
-          payload: { gameId },
-        }),
-      );
-    } else {
-      socket.addEventListener("open", () => {
-        socket.send(
-          JSON.stringify({
-            type: JOIN_GAME,
-            payload: { gameId },
-          }),
-        );
-      });
-    }
+    socket.send(JSON.stringify({ type: JOIN_GAME, payload: { gameId } }));
 
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
@@ -158,7 +152,13 @@ const GameRoom = () => {
             moveTimestamp,
           } = message.payload;
 
-          const chess = chessRef.current!;
+          // A move can land before the HTTP snapshot resolves. Seed the board
+          // from the broadcast rather than dropping the move — a dropped move
+          // deadlocks the game, since then neither side believes it's its turn.
+          const chess = chessRef.current ?? new Chess();
+          chessRef.current = chess;
+
+          // load(after) is absolute, so this also self-heals a missed move.
           chess.load(move.after);
 
           // IMPORTANT: clone board array to force React update
@@ -190,7 +190,7 @@ const GameRoom = () => {
           break;
       }
     };
-  }, [socket, hydrated, gameId]);
+  }, [socket, gameId, setGameResult]);
 
   // 4️⃣ DERIVED CLOCKS (NO local ticking)
   const chess = chessRef.current;
@@ -342,7 +342,7 @@ const GameRoom = () => {
               </div>
 
               <div className="flex flex-col gap-3 self-start">
-                {gameId && <Resign gameId={gameId} />}
+                {gameId && <Resign gameId={gameId} socket={socket} />}
               </div>
             </div>
 

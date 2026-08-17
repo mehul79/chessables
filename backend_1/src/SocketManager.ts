@@ -64,17 +64,25 @@ class SocketManager {
 
   removeUser(user: User) {
     const roomId = this.userRoomMappping.get(user.userId);
-    if (!roomId) {
-      console.error("User was not interested in any room?");
-      return;
-    }
+    // A socket that never joined a room (e.g. the lobby connection) is normal.
+    if (!roomId) return;
+
     const UsersinRoom = this.interestedSockets.get(roomId) || [];
-    const remainingUsers = UsersinRoom.filter((u) => u.userId !== user.userId);
-    this.interestedSockets.set(roomId, remainingUsers);
-    if (this.interestedSockets.get(roomId)?.length === 0) {
+    // Match on socket identity, NOT userId: one user can briefly hold several
+    // sockets while navigating, and a closing stale socket must not evict the
+    // live one.
+    const remainingUsers = UsersinRoom.filter((u) => u.socket !== user.socket);
+
+    if (remainingUsers.length === 0) {
       this.interestedSockets.delete(roomId);
+    } else {
+      this.interestedSockets.set(roomId, remainingUsers);
     }
-    this.userRoomMappping.delete(user.userId);
+
+    // Only drop the reverse mapping once this user has no live socket left.
+    if (!remainingUsers.some((u) => u.userId === user.userId)) {
+      this.userRoomMappping.delete(user.userId);
+    }
   }
 
   getSocket(userId: string): WebSocket | null {

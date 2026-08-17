@@ -129,7 +129,8 @@ export const getGame = async (req: Request, res: Response) => {
         totalTimeMs: 10 * 60 * 1000, // 10 minutes
         player1TimeConsumed,
         player2TimeConsumed,
-        lastMoveTime,
+        // Epoch ms, not an ISO string: the client does Number(lastMoveTime).
+        lastMoveTime: lastMoveTime.getTime(),
       },
 
       moves: game.moves.map((m) => ({

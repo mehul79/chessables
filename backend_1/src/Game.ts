@@ -11,7 +11,9 @@ import { socketManager, User } from './SocketManager';
 type GAME_STATUS = 'IN_PROGRESS' | 'COMPLETED' | 'ABANDONED' | 'TIME_UP' | 'PLAYER_EXIT';
 type GAME_RESULT = "WHITE_WINS" | "BLACK_WINS" | "DRAW";
 
-const GAME_TIME_MS = 60 * 60 * 1000; //after 10 minutes game is over
+// Must match the frontend's TOTAL_TIME_MS / the totalTimeMs reported by
+// GET /game/:gameId, or the client clock hits 0:00 while the server plays on.
+const GAME_TIME_MS = 10 * 60 * 1000;
 
 export function isPromoting(chess: Chess, from: Square, to: Square) {
   if (!from) {
@@ -264,6 +266,9 @@ export class Game {
         move: moveResult,
         player1TimeConsumed: this.player1TimeConsumed,
         player2TimeConsumed: this.player2TimeConsumed,
+        // Epoch ms: the client anchors its running clock on this. Without it the
+        // client fell back to its own Date.now() every move.
+        moveTimestamp: moveTimestamp.getTime(),
       },
     })
   );
@@ -318,7 +323,7 @@ export class Game {
     }
     this.timer = setTimeout(() => {
       this.endGame("ABANDONED", this.board.turn() === 'b' ? 'WHITE_WINS' : 'BLACK_WINS');
-    }, 60 * 1000);
+    }, 5 * 60 * 1000);
   }
 
   async resetMoveTimer() {
@@ -347,6 +352,7 @@ export class Game {
   }
 
   async endGame(status: GAME_STATUS, result: GAME_RESULT) {
+    this.result = result;
     const updatedGame = await db.game.update({
       data: {
         status,
