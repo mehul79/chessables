@@ -38,8 +38,10 @@ class SocketManager {
   }
 
   addUser(user: User, roomId: string) {
-    this.interestedSockets.set(roomId, [
-      ...(this.interestedSockets.get(roomId) || []),user]);
+    const existing = (this.interestedSockets.get(roomId) || []).filter(
+      (u) => u.userId !== user.userId
+    );
+    this.interestedSockets.set(roomId, [...existing, user]);
     this.userRoomMappping.set(user.userId, roomId);
   }
 
@@ -51,7 +53,12 @@ class SocketManager {
     }
 
     users.forEach((user) => {
-      user.socket.send(message);
+      if (user.socket.readyState !== WebSocket.OPEN) return;
+      try {
+        user.socket.send(message);
+      } catch (e) {
+        console.error(`Failed to send to user ${user.userId}:`, e);
+      }
     });
   }
 
